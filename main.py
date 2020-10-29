@@ -5,21 +5,32 @@ import sklearn.model_selection as skms
 
 
 def main():
+    #Construtor da classe tela(serve só para selecionar o arquivo da base de dados{POR ENQUANTO})
     screen = sc.Screen()
-    
+    #Realiza a importação da base de dados do trabalho
     csv = pd.read_csv(screen.getFilename(), sep=',')
+    
+    #Coluna responsavel por classicar as classes de dados(parametro usado no STRATIFY{serve para manter a proporção dos elementos na hora de realizar as divisões})
     classes = csv['Class']
-    aux = skms.train_test_split(csv, test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
+
+    """
+        realiza o shuffle e divided em 2 conjuntos de tamanho iguais (1/2) => 50% para o conjunto de teste
+        aux[0] = conjunto de teste
+        aux[1] = resto do conjunto
+    """
+    database = skms.train_test_split(csv, test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
     train = aux[0]
-    classes = aux[1]['Class']
+    classes = database[1]['Class']
 
-    aux = skms.train_test_split(aux[1], test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
-    validation = aux[0]
-    test = aux[1]
+    """
+        realiza uma segunda divisão sobre o resto do conjunto de dados ((1/2)/2) => 25% para o conjunto de validação e teste
+        database[0]' = conjunto de validação
+        database[1]' = conjutno de teste
+    """
+    database = skms.train_test_split(database[1], test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
+    validation = database[0]
+    test = database[1]
 
-    print(train)
-    print(validation)
-    print(test)
     
 
 
