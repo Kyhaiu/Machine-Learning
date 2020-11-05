@@ -34,16 +34,7 @@ def main():
     validation = database[0]
     test = database[1]
 
-    i, j, best, med = 0, 1, 0, 0
-    while(j < 107):
-        while(i < 20):
-            med += knn.knn(train, validation, test, j)
-            i += 1
-        med /= 20
-        if(med > best):
-            best = med
-            print(best)
-        j += 1
-
+    #knn.findBestK(train, validation, test)
+    print(knn.knn(train, validation, test, 1))
 
 main()

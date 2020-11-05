@@ -31,8 +31,6 @@ from sklearn.metrics import plot_confusion_matrix
 # }
 
 def knn(train, validation, test, k):
-    print(train)
-    
     # Target Class
     target_tr = train['Class']
     target_v  = validation['Class']
@@ -42,8 +40,8 @@ def knn(train, validation, test, k):
     features_v  = validation
 
     # Deleta a coluna Target das Features
-    del features_tr['Class']
-    del features_v['Class']
+    features_tr.drop(['Class'], axis=1)
+    features_v.drop(['Class'], axis=1)
 
     neigh = KNeighborsClassifier(n_neighbors=k, metric='euclidean')
     neigh_fit = neigh.fit(features_tr, target_tr)
@@ -51,9 +49,22 @@ def knn(train, validation, test, k):
     neigh_pred = neigh.predict(features_v)
     acc = neigh.score(features_v, target_v)
 
+    plot(neigh_fit, features_v, target_v)
     return acc
 
-    # plot(neigh_fit, features_v, target_v)
+
+def findBestK(train, validation, test):
+    i, j, best, med = 0, 1, 0, 0
+    while(j < 107):
+        while(i < 20):
+            med += knn(train, validation, test, j)
+            i += 1
+        med /= 20
+        if(med > best):
+            best = med
+            print(best, j)
+        j += 1
+        i, med = 0, 0
 
 
 def plot(neigh_fit, features_v, target_v):
