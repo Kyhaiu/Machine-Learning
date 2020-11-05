@@ -15,11 +15,11 @@ def main():
 
     """
         realiza o shuffle e divided em 2 conjuntos de tamanho iguais (1/2) => 50% para o conjunto de teste
-        aux[0] = conjunto de teste
-        aux[1] = resto do conjunto
+        database[0] = conjunto de teste
+        database[1] = resto do conjunto
     """
     database = skms.train_test_split(csv, test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
-    train = aux[0]
+    train = database[0]
     classes = database[1]['Class']
 
     """
