@@ -3,12 +3,15 @@ import pandas as pd
 import numpy  as np
 import sklearn.model_selection as skms
 
+import knn as knn
 
 def main():
     #Construtor da classe tela(serve só para selecionar o arquivo da base de dados{POR ENQUANTO})
-    screen = sc.Screen()
+    #screen = sc.Screen()
+
     #Realiza a importação da base de dados do trabalho
-    csv = pd.read_csv(screen.getFilename(), sep=',')
+    #csv = pd.read_csv(screen.getFilename(), sep=',')
+    csv = pd.read_csv('Glass.csv', ',')
     
     #Coluna responsavel por classicar as classes de dados(parametro usado no STRATIFY{serve para manter a proporção dos elementos na hora de realizar as divisões})
     classes = csv['Class']
@@ -19,7 +22,7 @@ def main():
         database[1] = resto do conjunto
     """
     database = skms.train_test_split(csv, test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
-    train = database[0]
+    train = database[0]             # Features e TargetClass para o conjunto de Treino
     classes = database[1]['Class']
 
     """
@@ -31,7 +34,16 @@ def main():
     validation = database[0]
     test = database[1]
 
-    
+    i, j, best, med = 0, 1, 0, 0
+    while(j < 107):
+        while(i < 20):
+            med += knn.knn(train, validation, test, j)
+            i += 1
+        med /= 20
+        if(med > best):
+            best = med
+            print(best)
+        j += 1
 
 
 main()
