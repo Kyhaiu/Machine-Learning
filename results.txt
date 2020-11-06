@@ -1,3 +1,6 @@
+TESTES MAIS COMPLETOS:
+https://docs.google.com/spreadsheets/d/16UR8CtBcjK_Z_xzLyhcUSehpy1AzePzyg-clNB_vTTo/edit?usp=sharing
+
 KNN Não Ponderado (K=1)
 1  - 0.9433962264150944 => 0.9434
 2  - 0.9245283018867925 => 0.9245
