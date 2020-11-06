@@ -1,14 +1,16 @@
 import Screen as sc
 import pandas as pd
 import numpy  as np
+import decision_tree as dt
 import sklearn.model_selection as skms
 
 
 def main():
     #Construtor da classe tela(serve só para selecionar o arquivo da base de dados{POR ENQUANTO})
-    screen = sc.Screen()
+    #screen = sc.Screen()
     #Realiza a importação da base de dados do trabalho
-    csv = pd.read_csv(screen.getFilename(), sep=',')
+    #csv = pd.read_csv(screen.getFilename(), sep=',')
+    csv = pd.read_csv('Glass.csv', sep=',')
     
     #Coluna responsavel por classicar as classes de dados(parametro usado no STRATIFY{serve para manter a proporção dos elementos na hora de realizar as divisões})
     classes = csv['Class']
@@ -31,7 +33,13 @@ def main():
     validation = database[0]
     test = database[1]
 
-    
+    dtc = dt.decision_tree(train, validation) #retorna a melhor instancia do classificador com poda e da arvore total de cada iteração
+    return (dtc[0], dtc[1], train, validation, test)
 
-
-main()
+i = 1
+result = []
+while i <= 20:
+    print('Iterration ' + str(i))
+    result.append(main())
+    i += 1
+    print('\n')
