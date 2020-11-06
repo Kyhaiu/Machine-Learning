@@ -30,18 +30,18 @@ from sklearn.metrics import plot_confusion_matrix
 #   7 headlamps
 # }
 
-def knn(train, validation, test, k):
+def knn(cnj1, cnj2, k, _type):
     # Target Class
-    target_tr = train['Class']
-    target_v  = validation['Class']
+    target_cnj1 = cnj1['Class']
+    target_cnj2 = cnj2['Class']
 
     # Features
-    features_tr = train
-    features_v  = validation
+    features_cnj1 = cnj1
+    features_cnj2 = cnj2
 
     # Deleta a coluna Target, ou seja, separa ela das Features
-    features_tr.drop(['Class'], axis=1)
-    features_v.drop(['Class'], axis=1)
+    features_cnj1.drop(['Class'], axis=1)
+    features_cnj2.drop(['Class'], axis=1)
 
     # Valor de K                                        => n_neighbors
     # Métrica de Distância {
@@ -51,28 +51,34 @@ def knn(train, validation, test, k):
     #}
     # The default metric is minkowski, and with p=2 is equivalent to the standard Euclidean metric.
     # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
-    neigh = KNeighborsClassifier(n_neighbors=k, weights='uniform', metric='minkowski')
-    neigh_fit = neigh.fit(features_tr, target_tr)
+    
+    if(_type == 0):
+        neigh = KNeighborsClassifier(n_neighbors=k)
+    else:
+        neigh = KNeighborsClassifier(n_neighbors=k, weights='distance', metric='minkowski', p=2)
 
-    neigh_pred = neigh.predict(features_v)
-    acc = neigh.score(features_v, target_v)
+    neigh_fit = neigh.fit(features_cnj1, target_cnj1)
 
-    #plot(neigh_fit, features_v, target_v)
+    neigh_pred = neigh.predict(features_cnj2)
+    acc = neigh.score(features_cnj2, target_cnj2)
+
+    #plot(neigh_fit, features_cnj2, target_cnj2)
     return acc
 
 
-def findBestK(train, validation, test):
-    i, j, best, med = 0, 1, 0, 0
-    while(j < 107):
-        while(i < 20):
-            med += knn(train, validation, test, j)
-            i += 1
-        med /= 20
-        if(med > best):
-            best = med
-            print(best, j)
-        j += 1
-        i, med = 0, 0
+def findBestK(train, validation, _type):
+    i, best, tmp = 1, (0, 0), 0
+    while(i < len(train)):
+        if(_type == 0):
+            tmp = knn(train, validation, i, 0)
+        else:
+            tmp = knn(train, validation, i, 1)
+
+        if(tmp > best[0]):
+            best = (tmp, i)
+        i+=1
+
+    return best
 
 
 def plot(neigh_fit, features_v, target_v):

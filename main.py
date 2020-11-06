@@ -34,8 +34,5 @@ def main():
     validation = database[0]
     test = database[1]
 
-    #knn.findBestK(train, validation, test)
-    print(knn.knn(train, validation, test, 1))
 
-    
 main()
