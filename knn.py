@@ -39,17 +39,25 @@ def knn(train, validation, test, k):
     features_tr = train
     features_v  = validation
 
-    # Deleta a coluna Target das Features
+    # Deleta a coluna Target, ou seja, separa ela das Features
     features_tr.drop(['Class'], axis=1)
     features_v.drop(['Class'], axis=1)
 
-    neigh = KNeighborsClassifier(n_neighbors=k, metric='euclidean')
+    # Valor de K                                        => n_neighbors
+    # Métrica de Distância {
+    #   não ponderado                                   => weights = 'uniform'
+    #   ponderado pelo inverso da distância euclidiana  => weights = 'distance'
+    #   ponderado por 1-distância normalizada           => ???
+    #}
+    # The default metric is minkowski, and with p=2 is equivalent to the standard Euclidean metric.
+    # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
+    neigh = KNeighborsClassifier(n_neighbors=k, weights='uniform', metric='minkowski')
     neigh_fit = neigh.fit(features_tr, target_tr)
 
     neigh_pred = neigh.predict(features_v)
     acc = neigh.score(features_v, target_v)
 
-    plot(neigh_fit, features_v, target_v)
+    #plot(neigh_fit, features_v, target_v)
     return acc
 
 
