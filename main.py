@@ -33,8 +33,11 @@ def main():
     validation = database[0]
     test = database[1]
 
-    dt.decision_tree(train, validation, test)
+    dtc = dt.decision_tree(train, validation) #retorna a instancia treinada do classificador da arvore de decisão
 
-
-
-main()
+i = 1
+while i <= 20:
+    print('Iterration ' + str(i))
+    main()
+    i += 1
+    print('\n')
