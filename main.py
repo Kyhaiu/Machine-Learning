@@ -34,10 +34,12 @@ def main():
     test = database[1]
 
     dtc = dt.decision_tree(train, validation) #retorna a melhor instancia do classificador com poda e da arvore total de cada iteração
+    return (dtc[0], dtc[1], train, validation, test)
 
 i = 1
+result = []
 while i <= 20:
     print('Iterration ' + str(i))
-    main()
+    result.append(main())
     i += 1
     print('\n')
