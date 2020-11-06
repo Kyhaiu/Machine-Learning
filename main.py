@@ -33,7 +33,7 @@ def main():
     validation = database[0]
     test = database[1]
 
-    dtc = dt.decision_tree(train, validation) #retorna a instancia treinada do classificador da arvore de decisão
+    dtc = dt.decision_tree(train, validation) #retorna a melhor instancia do classificador com poda e da arvore total de cada iteração
 
 i = 1
 while i <= 20:

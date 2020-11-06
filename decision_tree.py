@@ -54,7 +54,7 @@ def decision_tree(train, validation):
    best_params = find_best_pruning(ft_train, target_tr, ft_validation, target_v)
    
 
-   return best_params
+   return (best_params[0][2], best_params[1])
 
 def find_best_pruning(features_train, targets_train, features_validation, target_validation):
  
