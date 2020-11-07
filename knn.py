@@ -30,7 +30,7 @@ from sklearn.metrics import plot_confusion_matrix
 #   7 headlamps
 # }
 
-def knn(cnj1, cnj2, k, _type):
+def knn(cnj1, cnj2, k):
     # Target Class
     target_cnj1 = cnj1['Class']
     target_cnj2 = cnj2['Class']
@@ -51,32 +51,38 @@ def knn(cnj1, cnj2, k, _type):
     #}
     # The default metric is minkowski, and with p=2 is equivalent to the standard Euclidean metric.
     # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
-    
-    if(_type == 0):
-        neigh = KNeighborsClassifier(n_neighbors=k)
-    else:
-        neigh = KNeighborsClassifier(n_neighbors=k, weights='distance', metric='minkowski', p=2)
 
-    neigh_fit = neigh.fit(features_cnj1, target_cnj1)
+    neigh_np = KNeighborsClassifier(n_neighbors=k)
+    neigh_ecl_inv = KNeighborsClassifier(n_neighbors=k, weights='distance', metric='minkowski', p=2)
+    #neigh_pond = ???
 
-    neigh_pred = neigh.predict(features_cnj2)
-    acc = neigh.score(features_cnj2, target_cnj2)
+    neigh_np = neigh_np.fit(features_cnj1, target_cnj1)
+    neigh_ecl_inv = neigh_ecl_inv.fit(features_cnj1, target_cnj1)
 
+    acc_np = neigh_np.score(features_cnj2, target_cnj2)
+    acc_ecl_inv = neigh_ecl_inv.score(features_cnj2, target_cnj2)
     #plot(neigh_fit, features_cnj2, target_cnj2)
-    return acc
+    return [[acc_np, acc_ecl_inv], [neigh_np, neigh_ecl_inv]]
 
 
-def findBestK(train, validation, _type):
-    i, best, tmp = 1, (0, 0), 0
+def findBestKNN(train, validation):
+    i, best = 1, [[0, 0], [None, None], [None, None]]
     while(i < len(train)):
-        if(_type == 0):
-            tmp = knn(train, validation, i, 0)
-        else:
-            tmp = knn(train, validation, i, 1)
+        tmp = knn(train, validation, i)
 
-        if(tmp > best[0]):
-            best = (tmp, i)
+        if tmp[0][0] > best[0][0]:
+            best[0][0] = tmp[0][0] #acuracia do neigh_np
+            best[1][0] = tmp[1][0] #classificador do neigh_np
+            best[2][0] = i         #valor de k usado
+        
+        if tmp[0][1] > best[0][1]:
+            best[0][1] = tmp[0][1] #acuracia do neigh_ecl_inv
+            best[1][1] = tmp[1][1] #classificador do neigh_ecl_inv
+            best[2][1] = i         #valor de k usado
+        
         i+=1
+    print('KNN_NP      = Acc : ' + str(best[0][0]) + '\t, K : ' + str(best[2][0]))
+    print('KNN_ECL_INV = Acc : ' + str(best[0][1]) + '\t, K : ' + str(best[2][1]))
 
     return best
 
