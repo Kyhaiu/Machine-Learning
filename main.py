@@ -1,7 +1,7 @@
-import Screen as sc
-import pandas as pd
-import numpy  as np
-import decision_tree as dt
+import Screen      as sc
+import pandas      as pd
+import numpy       as np
+import naive_bayes as nb
 import sklearn.model_selection as skms
 
 
@@ -33,13 +33,11 @@ def main():
     validation = database[0]
     test = database[1]
 
-    dtc = dt.decision_tree(train, validation) #retorna a melhor instancia do classificador com poda e da arvore total de cada iteração
-    return (dtc[0], dtc[1], train, validation, test)
-
+    nb.Naive_Bayes(train, validation)
+    
+    #return (dtc[0], dtc[1], test)
 i = 1
-result = []
 while i <= 20:
-    print('Iterration ' + str(i))
-    result.append(main())
+    print('Iteration ' + str(i))
+    main()
     i += 1
-    print('\n')
