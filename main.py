@@ -1,7 +1,7 @@
-import Screen as sc
+#import Screen as sc
 import pandas as pd
 import numpy  as np
-import decision_tree as dt
+import knn    as knn
 import sklearn.model_selection as skms
 
 
@@ -32,14 +32,11 @@ def main():
     database = skms.train_test_split(database[1], test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
     validation = database[0]
     test = database[1]
-
-    dtc = dt.decision_tree(train, validation) #retorna a melhor instancia do classificador com poda e da arvore total de cada iteração
-    return (dtc[0], dtc[1], train, validation, test)
+    KNNs = knn.findBestKNN(train, validation)
 
 i = 1
-result = []
 while i <= 20:
     print('Iterration ' + str(i))
-    result.append(main())
+    main()
     i += 1
     print('\n')
