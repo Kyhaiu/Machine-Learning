@@ -1,9 +1,10 @@
 #import Screen as sc
-import pandas as pd
-import numpy  as np
-import knn    as knn
-import sklearn.model_selection as skms
+import pandas        as pd
+import numpy         as np
+import knn           as knn
+import decision_tree as dt
 
+import sklearn.model_selection as skms
 
 def main():
     #Construtor da classe tela(serve só para selecionar o arquivo da base de dados{POR ENQUANTO})
