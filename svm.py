@@ -23,6 +23,9 @@ def svm(cnj1, cnj2):
     clf = svm.SVC()
     clf.fit(features_cnj1, target_cnj1)
     
+    acc = clf.score(features_cnj2, target_cnj2)
+    
+    return acc
     
 # Função pra encontrar a melhor reta de divisão
 def findBestStraight():
