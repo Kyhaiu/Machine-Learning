@@ -7,6 +7,11 @@ import matplotlib.pyplot as plt
 from sklearn import svm
 from sklearn.metrics import plot_confusion_matrix
 
+# PARAMS {
+#   Valor do erro (C)
+#   Tipo de Kernel (Polinomial ou Radial)
+# }
+
 def svm(cnj1, cnj2):
     # Target Class
     target_cnj1 = cnj1['Class']

@@ -36,7 +36,7 @@ def main():
     test = database[1]
     
     #KNNs = knn.findBestKNN(train, validation)
-    print(SVMs = svm.svm())
+    print(svm.svm(train, validation))
 
 #i = 1
 #while i <= 20:
