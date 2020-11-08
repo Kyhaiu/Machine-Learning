@@ -32,7 +32,8 @@ def main():
     database = skms.train_test_split(database[1], test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
     validation = database[0]
     test = database[1]
-    KNNs = knn.findBestKNN(train, validation)
+    
+    #KNNs = knn.findBestKNN(train, validation)
 
 i = 1
 while i <= 20:
