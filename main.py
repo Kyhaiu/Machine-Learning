@@ -1,9 +1,11 @@
-import Screen      as sc
-import pandas      as pd
-import numpy       as np
-import naive_bayes as nb
-import sklearn.model_selection as skms
+#import Screen as sc
+import pandas        as pd
+import numpy         as np
+import knn           as knn
+import decision_tree as dt
+import svm           as svm
 
+import sklearn.model_selection as skms
 
 def main():
     #Construtor da classe tela(serve só para selecionar o arquivo da base de dados{POR ENQUANTO})
@@ -32,12 +34,13 @@ def main():
     database = skms.train_test_split(database[1], test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
     validation = database[0]
     test = database[1]
-
-    nb.Naive_Bayes(train, validation)
     
-    #return (dtc[0], dtc[1], test)
+    #KNNs = knn.findBestKNN(train, validation)
+    print(svm.svm(train, validation))
+
 i = 1
 while i <= 20:
-    print('Iteration ' + str(i))
+    print('Iterration ' + str(i))
     main()
     i += 1
+    print('\n')
