@@ -3,6 +3,7 @@ import pandas        as pd
 import numpy         as np
 import knn           as knn
 import decision_tree as dt
+import svm           as svm
 
 import sklearn.model_selection as skms
 
