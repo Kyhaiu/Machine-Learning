@@ -1,7 +1,7 @@
-#import Screen as sc
-import pandas as pd
-import numpy  as np
-import knn    as knn
+import Screen      as sc
+import pandas      as pd
+import numpy       as np
+import naive_bayes as nb
 import sklearn.model_selection as skms
 
 
@@ -32,12 +32,12 @@ def main():
     database = skms.train_test_split(database[1], test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
     validation = database[0]
     test = database[1]
-    
-    #KNNs = knn.findBestKNN(train, validation)
 
+    nb.Naive_Bayes(train, validation)
+    
+    #return (dtc[0], dtc[1], test)
 i = 1
 while i <= 20:
-    print('Iterration ' + str(i))
+    print('Iteration ' + str(i))
     main()
     i += 1
-    print('\n')
