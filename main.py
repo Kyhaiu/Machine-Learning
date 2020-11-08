@@ -37,9 +37,9 @@ def main():
     
     #KNNs = knn.findBestKNN(train, validation)
 
-i = 1
-while i <= 20:
-    print('Iterration ' + str(i))
+#i = 1
+#while i <= 20:
+#    print('Iterration ' + str(i))
     main()
-    i += 1
-    print('\n')
+#    i += 1
+#    print('\n')

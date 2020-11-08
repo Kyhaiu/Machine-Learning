@@ -19,6 +19,10 @@ def svm(cnj1, cnj2):
     # Deleta a coluna Target, ou seja, separa ela das Features
     features_cnj1.drop(['Class'], axis=1)
     features_cnj2.drop(['Class'], axis=1)
+
+    clf = svm.SVC()
+    clf.fit(features_cnj1, target_cnj1)
+    
     
 # Função pra encontrar a melhor reta de divisão
 def findBestStraight():
