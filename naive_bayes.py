@@ -14,11 +14,9 @@ def naive_bayes(train, validation):
     ft_train = features_tr.drop(['Class'], axis=1)
     ft_validation = features_v.drop(['Class'], axis=1)
     
-    nb_gaus =  nb.GaussianNB()
-    nb_gaus = nb_gaus.fit(features_tr, target_tr)
+    nb_gaus =  nb.GaussianNB().fit(features_tr, target_tr)
 
-    nb_bernoulliNB = nb.BernoulliNB()
-    nb_bernoulliNB = nb_bernoulliNB.fit(features_tr, target_tr)
+    nb_bernoulliNB = nb.BernoulliNB().fit(features_tr, target_tr)
 
     # Como o conjunto de caracteristicas possuem valores negativos não é possivel utilizar o MultinominalNB
     # Uma solução seria utilizar o GaussianoNB, ou normalizar as caracteristicas entre 0 e 1
@@ -26,7 +24,4 @@ def naive_bayes(train, validation):
     #print('Score of Naive-Bayes Gaussian     : \t' + str(nb_gaus.score(features_v, target_v)))
     #print('Score of Naive-Bayes Bernoulli    : \t' + str(nb_bernoulliNB.score(features_v, target_v)))
 
-    acc_nb_gaus      = nb_gaus.score(features_v, target_v)
-    acc_nb_bernoulli = nb_bernoulliNB.score(features_v, target_v)
-
-    return (nb_gaus, acc_nb_gaus, nb_bernoulliNB, acc_nb_bernoulli)
+    return [nb_gaus, nb_bernoulliNB]

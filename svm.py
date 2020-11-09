@@ -24,12 +24,12 @@ def svm(cnj1, cnj2):
     features_cnj2 = cnj2
 
     # Deleta a coluna Target, ou seja, separa ela das Features
-    features_cnj1.drop(['Class'], axis=1)
-    features_cnj2.drop(['Class'], axis=1)
+    features_cnj1 = features_cnj1.drop(['Class'], axis=1)
+    features_cnj1 = features_cnj2.drop(['Class'], axis=1)
 
     clf_poly_C, clf_rbf_C = findBestC(features_cnj1, target_cnj1, features_cnj2, target_cnj2)
     
-    return (clf_poly_C, clf_rbf_C)
+    return [clf_poly_C, clf_rbf_C] #retorna os svm com os kernels poly e rbf
     
 # Função pra encontrar a melhor reta de divisão
 def findBestC(train_features, train_target, validation_features, validation_target):

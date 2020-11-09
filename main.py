@@ -1,10 +1,11 @@
 #import Screen as sc
-import pandas        as pd
-import numpy         as np
-import knn           as knn
-import decision_tree as dt
-import naive_bayes   as nb
-import svm           as svm
+import pandas                as pd
+import numpy                 as np
+import knn                   as knn
+import decision_tree         as dt
+import naive_bayes           as nb
+import svm                   as svm
+import multilayer_perceptron as mlp
 
 import sklearn.model_selection as skms
 
@@ -36,19 +37,39 @@ def main():
     validation = database[0]
     test = database[1]
     
-    clfs = []
+    target_test = test['Class']
 
-    clfs[0] = knn.findBestKNN(train, validation)
-    clfs[1] = dt.decision_tree(train, validation)
-    clfs[2] = nb.naive_bayes(train, validation)
-    clfs[3] = _svm = svm.svm(train, validation)
-    #mlp = mlp.
+    # Features
+    features_test = test
 
-    testingClassifiers(train, test)
+    # Deleta a coluna Target, ou seja, separa ela das Features
+    features_test = features_test.drop(['Class'], axis=1)
 
-def testingClassifiers(train, test):
-    pass
+    clfs = [None, None, None, None, None]
 
+    aux = nb.naive_bayes(train, validation)
+    aux[0] = aux[0].fit(train.drop(['Class'], axis=1), train['Class'])
+    aux[1] = aux[1].fit(train.drop(['Class'], axis=1), train['Class'])
+    clfs[0] = testingClassifiers(knn.findBestKNN(train, validation), features_test, target_test)
+    clfs[1] = testingClassifiers(dt.decision_tree(train, validation), features_test, target_test)
+    clfs[2] = testingClassifiers(aux, features_test, target_test)
+    clfs[3] = testingClassifiers(svm.svm(train, validation), features_test, target_test)
+    clfs[4] = testingClassifiers(mlp.my_little_poney(train, validation), features_test, target_test)
+    
+
+def testingClassifiers(clfs, features_test, target_test):
+    i, best, acc_tmp = 0, [None, 0], 0
+    print(clfs)
+    while i < len(clfs):
+        acc_tmp = clfs[i].score(features_test, target_test)
+        print(acc_tmp)
+        if acc_tmp > best[1]:
+            best = [clfs[i], acc_tmp]
+        i += 1
+    
+    return best[0]
+
+main()
 """
 i = 1
 while i <= 20:

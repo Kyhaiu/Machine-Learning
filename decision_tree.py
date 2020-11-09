@@ -53,7 +53,7 @@ def decision_tree(train, validation):
 
    best_params = find_best_pruning(ft_train, target_tr, ft_validation, target_v)
    
-   return (best_params[0][0], best_params[0][2], best_params[1], best_params[2])
+   return [best_params[0], best_params[1]] #retorna a arvore podada, e arvore completa
 
 
 def find_best_pruning(features_train, targets_train, features_validation, target_validation):
@@ -78,7 +78,7 @@ def find_best_pruning(features_train, targets_train, features_validation, target
          
       i += 1
 
-   return (best, full_decision_tree, full_decision_tree.score(features_validation, target_validation)) # melhores parametros juntamente com sua arvore gerada e a arvore completa
+   return (best[2], full_decision_tree) # melhores parametros juntamente com sua arvore gerada e a arvore completa
 
 """
 def plot(dtc):

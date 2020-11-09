@@ -40,8 +40,8 @@ def knn(cnj1, cnj2, k):
     features_cnj2 = cnj2
 
     # Deleta a coluna Target, ou seja, separa ela das Features
-    features_cnj1.drop(['Class'], axis=1)
-    features_cnj2.drop(['Class'], axis=1)
+    features_cnj1 = features_cnj1.drop(['Class'], axis=1)
+    features_cnj2 = features_cnj2.drop(['Class'], axis=1)
 
     # Valor de K                                        => n_neighbors
     # Métrica de Distância {
@@ -85,7 +85,7 @@ def findBestKNN(train, validation):
     #print('KNN_NP      = Acc : ' + str(best[0][0]) + '\t, K : ' + str(best[2][0]))
     #print('KNN_ECL_INV = Acc : ' + str(best[0][1]) + '\t, K : ' + str(best[2][1]))
 
-    return best
+    return [best[1][0], best[1][1]]
 
 """
 def plot(neigh_fit, features_v, target_v):
