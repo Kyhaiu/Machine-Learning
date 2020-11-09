@@ -36,23 +36,33 @@ def main():
     validation = database[0]
     test = database[1]
     
-    
-    knn = knn.findBestKNN(train, validation)
-    dt  = dt.decision_tree(train, validation)
-    nb  = nb.naive_bayes(train, validation)
-    svm = svm.svm(train, validation)
+    clfs = []
+
+    clfs[0] = knn.findBestKNN(train, validation)
+    clfs[1] = dt.decision_tree(train, validation)
+    clfs[2] = nb.naive_bayes(train, validation)
+    clfs[3] = _svm = svm.svm(train, validation)
     #mlp = mlp.
 
-    return (knn, dt, nb, svm)
+    testingClassifiers(train, test)
 
+def testingClassifiers(train, test):
+    pass
+
+"""
 i = 1
 while i <= 20:
-    knn, dt, nb, svm = [], 0, (None, None), (None, None)
+    _knn, _dt, _nb, _svm = [], (None, None), (None, None), (None, None)
 
-    print('Iterration ' + str(i))
-    knn, dt, nb, svm = main()
+    print('Iteration ' + str(i))
+    _knn, _dt, _nb, _svm = main()
+    print("KNN Não Ponderado                            : " + str(_knn[0][0]) + "\n" +
+          "KNN Ponderado Inverso da Distância Euclidiana: " + str(_knn[0][1]) + '\n' +
+          "DT Com Poda                                  : " + str(_dt[0])     + '\n' +
+          "DT Sem Poda                                  : " + str(_dt[3])     + '\n' +
+          "Naive-Bayes Gaus                             : " + str(_nb[1])     + '\n' +
+          "Naive-Bayes Bernoulli                        : " + str(_nb[3])     + '\n' +
+          "SVM Polinomial                               : " + str(_svm[0][1]) + '\n' +
+          "SVM Radial                                   : " + str(_svm[1][1]) + '\n' + '\n')
     i += 1
-    print(knn + '\t' +
-            dt  + '\t' +
-            nb  + '\t' +
-            svm + '\t' + '\n')
+"""

@@ -26,4 +26,7 @@ def naive_bayes(train, validation):
     #print('Score of Naive-Bayes Gaussian     : \t' + str(nb_gaus.score(features_v, target_v)))
     #print('Score of Naive-Bayes Bernoulli    : \t' + str(nb_bernoulliNB.score(features_v, target_v)))
 
-    return (nb_gaus, nb_bernoulliNB)
+    acc_nb_gaus      = nb_gaus.score(features_v, target_v)
+    acc_nb_bernoulli = nb_bernoulliNB.score(features_v, target_v)
+
+    return (nb_gaus, acc_nb_gaus, nb_bernoulliNB, acc_nb_bernoulli)

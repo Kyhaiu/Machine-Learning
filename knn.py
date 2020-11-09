@@ -61,6 +61,7 @@ def knn(cnj1, cnj2, k):
 
     acc_np = neigh_np.score(features_cnj2, target_cnj2)
     acc_ecl_inv = neigh_ecl_inv.score(features_cnj2, target_cnj2)
+    
     #plot(neigh_fit, features_cnj2, target_cnj2)
     return [[acc_np, acc_ecl_inv], [neigh_np, neigh_ecl_inv]]
 
@@ -81,12 +82,12 @@ def findBestKNN(train, validation):
             best[2][1] = i         #valor de k usado
         
         i+=1
-    print('KNN_NP      = Acc : ' + str(best[0][0]) + '\t, K : ' + str(best[2][0]))
-    print('KNN_ECL_INV = Acc : ' + str(best[0][1]) + '\t, K : ' + str(best[2][1]))
+    #print('KNN_NP      = Acc : ' + str(best[0][0]) + '\t, K : ' + str(best[2][0]))
+    #print('KNN_ECL_INV = Acc : ' + str(best[0][1]) + '\t, K : ' + str(best[2][1]))
 
     return best
 
-
+"""
 def plot(neigh_fit, features_v, target_v):
     # Plot non-normalized confusion matrix
     titles_options = [("Confusion matrix, without normalization", None)]
@@ -95,3 +96,4 @@ def plot(neigh_fit, features_v, target_v):
         disp.ax_.set_title(title)
 
     plt.show()
+"""

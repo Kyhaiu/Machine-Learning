@@ -53,7 +53,7 @@ def decision_tree(train, validation):
 
    best_params = find_best_pruning(ft_train, target_tr, ft_validation, target_v)
    
-   return (best_params[0][2], best_params[1])
+   return (best_params[0][0], best_params[0][2], best_params[1], best_params[2])
 
 
 def find_best_pruning(features_train, targets_train, features_validation, target_validation):
@@ -62,10 +62,10 @@ def find_best_pruning(features_train, targets_train, features_validation, target
    full_decision_tree = full_decision_tree.fit(features_train, targets_train) 
 
    i, tmp_acc, best = 2, 0, (0, 0)
-   print('Depth of full tree = ' + str(full_decision_tree.get_depth()))
-   print('Score of full tree = ' + str(full_decision_tree.score(features_validation, target_validation)) + '\n\n')
+   #print('Depth of full tree = ' + str(full_decision_tree.get_depth()))
+   #print('Score of full tree = ' + str(full_decision_tree.score(features_validation, target_validation)) + '\n\n')
 
-   print('Finding best point to pruning (Pre-Pruning):\n')
+   #print('Finding best point to pruning (Pre-Pruning):\n')
    while i < full_decision_tree.get_depth():
       
       dtc = tree.DecisionTreeClassifier(criterion='entropy', splitter='best', max_leaf_nodes=i) # instância do classificador
@@ -74,11 +74,11 @@ def find_best_pruning(features_train, targets_train, features_validation, target
 
       if tmp_acc > best[0]:
          best = (tmp_acc, i, dtc)
-         print('Tree ' + ' with pruning in ' + str(i) + ': Score = ' + str(best[0]) + '\t, Max_Depth = ' + str(best[1]))
+         #print('Tree ' + ' with pruning in ' + str(i) + ': Score = ' + str(best[0]) + '\t, Max_Depth = ' + str(best[1]))
          
       i += 1
 
-   return (best, full_decision_tree) # melhores parametros juntamente com sua arvore gerada e a arvore completa
+   return (best, full_decision_tree, full_decision_tree.score(features_validation, target_validation)) # melhores parametros juntamente com sua arvore gerada e a arvore completa
 
 """
 def plot(dtc):
