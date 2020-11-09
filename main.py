@@ -47,40 +47,44 @@ def main():
 
     clfs = [None, None, None, None, None]
     
-    clfs[0] = testingClassifiers(knn.findBestKNN(train, validation), features_test, target_test)
-    clfs[1] = testingClassifiers(dt.decision_tree(train, validation), features_test, target_test)
-    clfs[2] = testingClassifiers(nb.naive_bayes(train, validation), features_test, target_test)
-    clfs[3] = testingClassifiers(svm.svm(train, validation), features_test, target_test)
-    clfs[4] = testingClassifiers(mlp.my_little_poney(train, validation), features_test, target_test)
-    
+    #clfs[0] = choose_best_classifier(knn.findBestKNN(train, validation), features_test, target_test)
+    #clfs[1] = choose_best_classifier(dt.decision_tree(train, validation), features_test, target_test)
+    #clfs[2] = choose_best_classifier(nb.naive_bayes(train, validation), features_test, target_test)
+    #clfs[3] = choose_best_classifier(svm.svm(train, validation), features_test, target_test)
+    #clfs[4] = choose_best_classifier(mlp.my_little_poney(train, validation), features_test, target_test)
 
-def testingClassifiers(clfs, features_test, target_test):
+    clfs[0] = testingClassifiers(knn.findBestKNN(train, validation)[0], features_test, target_test)     #KNN Euclidiano
+    clfs[1] = testingClassifiers(dt.decision_tree(train, validation)[1], features_test, target_test)    #Decision-Tree completa(sem poda)
+    clfs[2] = testingClassifiers(nb.naive_bayes(train, validation)[1], features_test, target_test)      #Naive-Bayes Bernoulli
+    clfs[3] = testingClassifiers(svm.svm(train, validation)[1], features_test, target_test)             #SMV kernel RBF
+    clfs[4] = testingClassifiers(mlp.my_little_poney(train, validation)[0], features_test, target_test) #MLP Constant
+
+    del classes, csv, database, train, validation, test, target_test, features_test
+    return (clfs)
+    
+#função rodada 5 vezes, e realizado uma analise manual para definir qual é o melho classificador entre os tipos de classificadores retornados
+def choose_best_classifier(clfs, features_test, target_test):
     i, best, acc_tmp = 0, [None, 0], 0
-    print(clfs)
     while i < len(clfs):
         acc_tmp = clfs[i].score(features_test, target_test)
-        print(acc_tmp)
         if acc_tmp > best[1]:
             best = [clfs[i], acc_tmp]
         i += 1
     
     return best[0]
 
-main()
-"""
+def testingClassifiers(clf, features_test, target_test):
+    return clf.score(features_test, target_test)
+
 i = 1
 while i <= 20:
-    _knn, _dt, _nb, _svm = [], (None, None), (None, None), (None, None)
+    _knn, _dt, _nb, _svm, _mlp = None, None, None, None, None
 
     print('Iteration ' + str(i))
-    _knn, _dt, _nb, _svm = main()
-    print("KNN Não Ponderado                            : " + str(_knn[0][0]) + "\n" +
-          "KNN Ponderado Inverso da Distância Euclidiana: " + str(_knn[0][1]) + '\n' +
-          "DT Com Poda                                  : " + str(_dt[0])     + '\n' +
-          "DT Sem Poda                                  : " + str(_dt[3])     + '\n' +
-          "Naive-Bayes Gaus                             : " + str(_nb[1])     + '\n' +
-          "Naive-Bayes Bernoulli                        : " + str(_nb[3])     + '\n' +
-          "SVM Polinomial                               : " + str(_svm[0][1]) + '\n' +
-          "SVM Radial                                   : " + str(_svm[1][1]) + '\n' + '\n')
+    _knn, _dt, _nb, _svm, _mlp = main()
+    print("KNN           : " + str(_knn) + "\n" +
+          "DT            : " + str(_dt)  + '\n' +
+          "Naive-Bayes   : " + str(_nb)  + '\n' +
+          "SVM           : " + str(_svm) + '\n' + 
+          "MLP           : " + str(_mlp) + '\n')
     i += 1
-"""

@@ -17,7 +17,8 @@ def my_little_poney(train, validation):
     features_validation = validation.drop(['Class'], axis=1)
     
     #retorna o mlp com taxa constant, invscalling, adaptative
-    return [find_best_poney(features_train, target_train, features_validation, target_validation)]
+    best_poney_constant, best_poney_inv, best_poney_adapt = find_best_poney(features_train, target_train, features_validation, target_validation)
+    return [best_poney_constant, best_poney_inv, best_poney_adapt]
     
 
 def find_best_poney(features_train, target_train, features_validation, target_validation):
@@ -80,4 +81,4 @@ def find_best_poney(features_train, target_train, features_validation, target_va
         else:
             k += 10
         
-    return [classifier_constant[acc_const.index(max(acc_const), 0, -1)], classifier_inv[acc_inv.index(max(acc_inv), 0, -1)], classifier_adapt[acc_adapt.index(max(acc_adapt), 0, -1)]]
+    return (classifier_constant[acc_const.index(max(acc_const), 0, -1)], classifier_inv[acc_inv.index(max(acc_inv), 0, -1)], classifier_adapt[acc_adapt.index(max(acc_adapt), 0, -1)])
