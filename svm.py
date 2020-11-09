@@ -27,7 +27,7 @@ def svm(cnj1, cnj2):
     features_cnj1 = features_cnj1.drop(['Class'], axis=1)
     features_cnj1 = features_cnj2.drop(['Class'], axis=1)
 
-    [clf_poly, clf_rbf] = findBestC(features_cnj1, target_cnj1, features_cnj2, target_cnj2)
+    clf_poly, clf_rbf = findBestC(features_cnj1, target_cnj1, features_cnj2, target_cnj2)
 
     return [clf_poly[0], clf_rbf[0]] #retorna os svm com os kernels poly e rbf
     
@@ -36,7 +36,7 @@ def findBestC(train_features, train_target, validation_features, validation_targ
     i = 0.1
     best_poly = [None,0] # Classifier, Score
     best_rbf  = [None,0] # Classifier, Score
-    best_acc      = [0,0]
+    best_acc  = [0,0]
     while i <= 20:
         clf_poly = make_pipeline(StandardScaler(), SVC(gamma='scale', kernel='poly', C=i))
         clf_poly.fit(train_features, train_target)
