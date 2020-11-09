@@ -29,7 +29,7 @@ def svm(cnj1, cnj2):
 
     [clf_poly, clf_rbf] = findBestC(features_cnj1, target_cnj1, features_cnj2, target_cnj2)
 
-    return [clf_poly, clf_rbf] #retorna os svm com os kernels poly e rbf
+    return [clf_poly[0], clf_rbf[0]] #retorna os svm com os kernels poly e rbf
     
 # Função pra encontrar a melhor reta de divisão
 def findBestC(train_features, train_target, validation_features, validation_target):
