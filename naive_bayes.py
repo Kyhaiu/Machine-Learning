@@ -1,7 +1,7 @@
 import numpy as np
 import sklearn.naive_bayes as nb
 
-def Naive_Bayes(train, validation):
+def naive_bayes(train, validation):
     # Targets
     target_tr = train['Class']
     target_v  = validation['Class']

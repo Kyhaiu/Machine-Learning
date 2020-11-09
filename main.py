@@ -3,6 +3,7 @@ import pandas        as pd
 import numpy         as np
 import knn           as knn
 import decision_tree as dt
+import naive_bayes   as nb
 import svm           as svm
 
 import sklearn.model_selection as skms
@@ -35,8 +36,11 @@ def main():
     validation = database[0]
     test = database[1]
     
-    #KNNs = knn.findBestKNN(train, validation)
-    print(svm.svm(train, validation))
+    knn = knn.findBestKNN(train, validation)
+    svm = svm.svm(train, validation)
+    #dt = dt.
+    nb  = nb.naive_bayes(train, validation)
+    #mlp = mlp.
 
 i = 1
 while i <= 20:
