@@ -1,9 +1,8 @@
-import Screen      as sc
+#import Screen      as sc
 import pandas      as pd
 import numpy       as np
-import naive_bayes as nb
 import sklearn.model_selection as skms
-
+import multilayer_perceptron as mlp
 
 def main():
     #Construtor da classe tela(serve só para selecionar o arquivo da base de dados{POR ENQUANTO})
@@ -33,11 +32,12 @@ def main():
     validation = database[0]
     test = database[1]
 
-    nb.Naive_Bayes(train, validation)
+    mlp.my_little_poney(train, validation)
     
+main()
     #return (dtc[0], dtc[1], test)
-i = 1
+"""i = 1
 while i <= 20:
     print('Iteration ' + str(i))
     main()
-    i += 1
+    i += 1"""
