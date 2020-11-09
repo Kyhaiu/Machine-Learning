@@ -3,7 +3,10 @@ import numpy  as np
 import statistics as st
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
+from sklearn.utils.testing import ignore_warnings
+from sklearn.exceptions import ConvergenceWarning
 
+@ignore_warnings(category=ConvergenceWarning)
 def my_little_poney(train, validation):
     # Targets
     target_train       = train['Class']
@@ -14,37 +17,56 @@ def my_little_poney(train, validation):
     features_validation = validation.drop(['Class'], axis=1)
     
 
-    find_best_poney(features_train, target_train, features_validation, target_validation)
+    print(find_best_poney(features_train, target_train, features_validation, target_validation))
     
 
 def find_best_poney(features_train, target_train, features_validation, target_validation):
-    i, j, k, y = 1, 1, 1, 0
-    mean = [1.0, 1.0, 1.0]
+    i, j, k = 1, 1, 1
+    mean = [0.0, 0.0, 0.0]
     classifier_constant, classifier_inv, classifier_adapt = [], [], []
+    acc_const, acc_inv, acc_adapt = [], [], []
     stop = [False, False, False]
 
     while True:
+        
         if not(stop[0]):
             clf_constant = MLPClassifier(hidden_layer_sizes=(i, j), learning_rate='constant', max_iter=k)
-            classifier_constant.append((clf_constant.fit(features_train, target_train), clf_constant.fit(features_train, target_train).score(features_validation, target_validation)))
-            mean[0] = st.mean(classifier_constant[1])
-        if((mean[0] > classifier_constant[1][-1] and max(classifier_constant[1]) > 0.75)):
+
+            classifier_constant.append(clf_constant.fit(features_train, target_train))
+            
+            acc_const.append(classifier_constant[-1].score(features_validation, target_validation))
+            
+            mean[0] = st.mean(acc_const)
+        if((mean[0] > acc_const[-1] and max(acc_const) > 0.65)):
             stop[0] = True
         
         if not(stop[1]):
             clf_invscaling = MLPClassifier(hidden_layer_sizes=(i, j), learning_rate='invscaling', max_iter=k)
-            classifier_inv.append((clf_constant.fit(features_train, target_train), clf_constant.fit(features_train, target_train).score(features_validation, target_validation)))
-            mean[1] = st.mean(classifier_inv[1])
-        if((mean[1] > classifier_inv[1][-1] and max(classifier_inv[1]) > 0.75)):
+            
+            classifier_inv.append(clf_invscaling.fit(features_train, target_train))
+            
+            acc_inv.append(classifier_inv[-1].score(features_validation, target_validation))
+            
+            mean[1] = st.mean(acc_inv)
+        
+        if((mean[1] > acc_inv[-1] and max(acc_inv) > 0.65)):
             stop[1] = True
         
         if not(stop[2]):
             clf_adaptive = MLPClassifier(hidden_layer_sizes=(i, j), learning_rate='adaptive', max_iter=k)
-            classifier_adapt.append((clf_constant.fit(features_train, target_train), clf_constant.fit(features_train, target_train).score(features_validation, target_validation)))
-            mean[2] = st.mean(classifier_adapt[1])
-        if((mean[2] > classifier_adapt[1][-1] and max(classifier_adapt[1]) > 0.75)):
+        
+            classifier_adapt.append(clf_adaptive.fit(features_train, target_train))
+        
+            acc_adapt.append(classifier_adapt[-1].score(features_validation, target_validation))
+        
+            mean[2] = st.mean(acc_adapt)
+        
+        if((mean[2] > acc_adapt[-1] and max(acc_adapt) > 0.65)):
             stop[2] = True
 
+
+        if ((i >= 100 and j >= 100 and k >= 300) or (stop[0] and stop[1] and stop[2])):
+            break
         if (i >= 100):
             i = 1
         else:
@@ -57,10 +79,5 @@ def find_best_poney(features_train, target_train, features_validation, target_va
             k = 1
         else:
             k += 10
-        if (y == 1000):
-            break
-        y += 1
-
-    print(max(classifier_constant[1]))
-    print(max(classifier_inv[1]))
-    print(max(classifier_adapt[1]))
+        
+    return (classifier_constant[acc_const.index(max(acc_const), 0, -1)], classifier_inv[acc_inv.index(max(acc_inv), 0, -1)], classifier_adapt[acc_adapt.index(max(acc_adapt), 0, -1)])
