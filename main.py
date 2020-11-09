@@ -46,13 +46,10 @@ def main():
     features_test = features_test.drop(['Class'], axis=1)
 
     clfs = [None, None, None, None, None]
-
-    aux = nb.naive_bayes(train, validation)
-    aux[0] = aux[0].fit(train.drop(['Class'], axis=1), train['Class'])
-    aux[1] = aux[1].fit(train.drop(['Class'], axis=1), train['Class'])
+    
     clfs[0] = testingClassifiers(knn.findBestKNN(train, validation), features_test, target_test)
     clfs[1] = testingClassifiers(dt.decision_tree(train, validation), features_test, target_test)
-    clfs[2] = testingClassifiers(aux, features_test, target_test)
+    clfs[2] = testingClassifiers(nb.naive_bayes(train, validation), features_test, target_test)
     clfs[3] = testingClassifiers(svm.svm(train, validation), features_test, target_test)
     clfs[4] = testingClassifiers(mlp.my_little_poney(train, validation), features_test, target_test)
     
