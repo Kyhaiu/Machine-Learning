@@ -23,6 +23,7 @@ def naive_bayes(train, validation):
     # Como o conjunto de caracteristicas possuem valores negativos não é possivel utilizar o MultinominalNB
     # Uma solução seria utilizar o GaussianoNB, ou normalizar as caracteristicas entre 0 e 1
 
-    print('Score of Naive-Bayes Gaussian     : \t' + str(nb_gaus.score(features_v, target_v)))
-    print('Score of Naive-Bayes Bernoulli    : \t' + str(nb_bernoulliNB.score(features_v, target_v)))
-    
+    #print('Score of Naive-Bayes Gaussian     : \t' + str(nb_gaus.score(features_v, target_v)))
+    #print('Score of Naive-Bayes Bernoulli    : \t' + str(nb_bernoulliNB.score(features_v, target_v)))
+
+    return (nb_gaus, nb_bernoulliNB)

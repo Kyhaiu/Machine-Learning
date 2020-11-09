@@ -36,15 +36,23 @@ def main():
     validation = database[0]
     test = database[1]
     
+    
     knn = knn.findBestKNN(train, validation)
-    svm = svm.svm(train, validation)
-    #dt = dt.
+    dt  = dt.decision_tree(train, validation)
     nb  = nb.naive_bayes(train, validation)
+    svm = svm.svm(train, validation)
     #mlp = mlp.
+
+    return (knn, dt, nb, svm)
 
 i = 1
 while i <= 20:
+    knn, dt, nb, svm = [], 0, (None, None), (None, None)
+
     print('Iterration ' + str(i))
-    main()
+    knn, dt, nb, svm = main()
     i += 1
-    print('\n')
+    print(knn + '\t' +
+            dt  + '\t' +
+            nb  + '\t' +
+            svm + '\t' + '\n')
