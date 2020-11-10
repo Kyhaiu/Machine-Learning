@@ -81,35 +81,35 @@ def rule_of_sum(clfs, features, target):
     print('KNN')
     for i in clfs[0].predict_proba(features):
         j = 0
-        while(j < 6):
+        while(j < number_of_classes):
             sum_knn[j] += i[j]
             j+=1
         print(i)
     print('DT')
     for i in clfs[1].predict_proba(features):
         j = 0
-        while(j < 6):
+        while(j < number_of_classes):
             sum_dt[j] += i[j]
             j+=1
         print(i)
     print('NB')
     for i in clfs[2].predict_proba(features):
         j = 0
-        while(j < 6):
+        while(j < number_of_classes):
             sum_nb[j] += i[j]
             j+=1
         print(i)
     print('SVM')
     for i in clfs[3].predict_proba(features):
         j = 0
-        while(j < 6):
+        while(j < number_of_classes):
             sum_svm[j] += i[j]
             j+=1
         print(i)
     print('MLP')
     for i in clfs[4].predict_proba(features):
         j = 0
-        while(j < 6):
+        while(j < number_of_classes):
             sum_mlp[j] += i[j]
             j+=1
         print(i)
