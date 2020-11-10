@@ -10,38 +10,24 @@ import multilayer_perceptron as mlp
 import sklearn.model_selection as skms
 
 def main():
-    #Construtor da classe tela(serve só para selecionar o arquivo da base de dados{POR ENQUANTO})
-    #screen = sc.Screen()
-    #Realiza a importação da base de dados do trabalho
-    #csv = pd.read_csv(screen.getFilename(), sep=',')
     csv = pd.read_csv('Glass.csv', sep=',')
     
     #Coluna responsavel por classicar as classes de dados(parametro usado no STRATIFY{serve para manter a proporção dos elementos na hora de realizar as divisões})
     classes = csv['Class']
 
     """
-        realiza o shuffle e divided em 2 conjuntos de tamanho iguais (1/2) => 50% para o conjunto de teste
-        database[0] = conjunto de teste
-        database[1] = resto do conjunto
+        realiza uma divisão sobre o do conjunto de dados
+        database[0]' = conjunto de treino => 75%
+        database[1]' = conjutno de teste  => 25%
     """
-    database = skms.train_test_split(csv, test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
-    train = database[0]
-    classes = database[1]['Class']
-
-    """
-        realiza uma segunda divisão sobre o resto do conjunto de dados ((1/2)/2) => 25% para o conjunto de validação e teste
-        database[0]' = conjunto de validação
-        database[1]' = conjutno de teste
-    """
-    database = skms.train_test_split(database[1], test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
-    validation = database[0]
+    database = skms.train_test_split(csv, test_size = 0.75, train_size = 0.25, shuffle = True, stratify=classes)
+    k_validation = database[0]
     test = database[1]
-    
-    target_test = test['Class']
 
+    # Target
+    target_test = test['Class']
     # Features
     features_test = test
-
     # Deleta a coluna Target, ou seja, separa ela das Features
     features_test = features_test.drop(['Class'], axis=1)
 
@@ -53,16 +39,20 @@ def main():
     #clfs[3] = choose_best_classifier(svm.svm(train, validation), features_test, target_test)
     #clfs[4] = choose_best_classifier(mlp.my_little_poney(train, validation), features_test, target_test)
 
-    clfs[0] = testingClassifiers(knn.findBestKNN(train, validation)[0], features_test, target_test)     #KNN Euclidiano
-    clfs[1] = testingClassifiers(dt.decision_tree(train, validation)[1], features_test, target_test)    #Decision-Tree completa(sem poda)
-    clfs[2] = testingClassifiers(nb.naive_bayes(train, validation)[1], features_test, target_test)      #Naive-Bayes Bernoulli
-    clfs[3] = testingClassifiers(svm.svm(train, validation)[1], features_test, target_test)             #SMV kernel RBF
-    clfs[4] = testingClassifiers(mlp.my_little_poney(train, validation)[0], features_test, target_test) #MLP Constant
+    clfs[0] = testingClassifiers(knn.knn(k_validation), features_test, target_test)                      #KNN Euclidiano
+    #clfs[1] = testingClassifiers(dt.decision_tree(train, validation)[1], features_test, target_test)    #Decision-Tree completa(sem poda)
+    #clfs[2] = testingClassifiers(nb.naive_bayes(train, validation)[1], features_test, target_test)      #Naive-Bayes Bernoulli
+    #clfs[3] = testingClassifiers(svm.svm(train, validation)[1], features_test, target_test)             #SMV kernel RBF
+    #clfs[4] = testingClassifiers(mlp.my_little_poney(train, validation)[0], features_test, target_test) #MLP Constant
 
-    del classes, csv, database, train, validation, test, target_test, features_test
+    del classes, csv, database, test, target_test, features_test
     return (clfs)
-    
-#função rodada 5 vezes, e realizado uma analise manual para definir qual é o melho classificador entre os tipos de classificadores retornados
+
+def testingClassifiers(clf, features_test, target_test):
+    return clf.best_estimator_.score(features_test, target_test)
+
+# Função rodada 5 vezes, e realizado uma analise manual para definir qual é o melho classificador entre os tipos de classificadores retornados
+"""
 def choose_best_classifier(clfs, features_test, target_test):
     i, best, acc_tmp = 0, [None, 0], 0
     while i < len(clfs):
@@ -72,9 +62,7 @@ def choose_best_classifier(clfs, features_test, target_test):
         i += 1
     
     return best[0]
-
-def testingClassifiers(clf, features_test, target_test):
-    return clf.score(features_test, target_test)
+"""
 
 i = 1
 while i <= 20:

@@ -2,10 +2,9 @@ import Screen as sc
 import pandas as pd
 import numpy  as np
 import sklearn.model_selection as skms
-import matplotlib.pyplot as plt
 
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import plot_confusion_matrix
+from sklearn.model_selection import GridSearchCV
 
 # Problema Multiclasse (9) = {
 #   A1. RI: refractive index
@@ -30,18 +29,15 @@ from sklearn.metrics import plot_confusion_matrix
 #   7 headlamps
 # }
 
-def knn(cnj1, cnj2, k):
+def knn(k_validation):
     # Target Class
-    target_cnj1 = cnj1['Class']
-    target_cnj2 = cnj2['Class']
-
+    target = k_validation['Class']
+    
     # Features
-    features_cnj1 = cnj1
-    features_cnj2 = cnj2
+    features = k_validation
 
     # Deleta a coluna Target, ou seja, separa ela das Features
-    features_cnj1 = features_cnj1.drop(['Class'], axis=1)
-    features_cnj2 = features_cnj2.drop(['Class'], axis=1)
+    features = features.drop(['Class'], axis=1)
 
     # Valor de K                                        => n_neighbors
     # Métrica de Distância {
@@ -52,40 +48,12 @@ def knn(cnj1, cnj2, k):
     # The default metric is minkowski, and with p=2 is equivalent to the standard Euclidean metric.
     # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
 
-    neigh_np = KNeighborsClassifier(n_neighbors=k)
-    neigh_ecl_inv = KNeighborsClassifier(n_neighbors=k, weights='distance', metric='minkowski', p=2)
-    #neigh_pond = ???
+    parameters = {'n_neighbors':[1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21], 'weights':('distance', 'uniform')}
 
-    neigh_np = neigh_np.fit(features_cnj1, target_cnj1)
-    neigh_ecl_inv = neigh_ecl_inv.fit(features_cnj1, target_cnj1)
-
-    acc_np = neigh_np.score(features_cnj2, target_cnj2)
-    acc_ecl_inv = neigh_ecl_inv.score(features_cnj2, target_cnj2)
+    clf = GridSearchCV(KNeighborsClassifier(), parameters, cv=3)
+    clf = clf.fit(features, target)
     
-    #plot(neigh_fit, features_cnj2, target_cnj2)
-    return [[acc_np, acc_ecl_inv], [neigh_np, neigh_ecl_inv]]
-
-
-def findBestKNN(train, validation):
-    i, best = 1, [[0, 0], [None, None], [None, None]]
-    while(i < len(train)):
-        tmp = knn(train, validation, i)
-
-        if tmp[0][0] > best[0][0]:
-            best[0][0] = tmp[0][0] #acuracia do neigh_np
-            best[1][0] = tmp[1][0] #classificador do neigh_np
-            best[2][0] = i         #valor de k usado
-        
-        if tmp[0][1] > best[0][1]:
-            best[0][1] = tmp[0][1] #acuracia do neigh_ecl_inv
-            best[1][1] = tmp[1][1] #classificador do neigh_ecl_inv
-            best[2][1] = i         #valor de k usado
-        
-        i+=1
-    #print('KNN_NP      = Acc : ' + str(best[0][0]) + '\t, K : ' + str(best[2][0]))
-    #print('KNN_ECL_INV = Acc : ' + str(best[0][1]) + '\t, K : ' + str(best[2][1]))
-
-    return [best[1][0], best[1][1]]
+    return clf
 
 """
 def plot(neigh_fit, features_v, target_v):
