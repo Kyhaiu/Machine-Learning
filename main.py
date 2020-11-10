@@ -1,5 +1,6 @@
 #import Screen as sc
 import warnings
+import os
 import pandas                  as pd
 import numpy                   as np
 import knn                     as knn
@@ -72,6 +73,7 @@ def rule_of_sum(clfs, features, target):
     print('KNN')
     for i in clfs[0].predict_proba(features):
         print(i)
+        #os.system("PAUSE")
     print('DT')
     for i in clfs[1].predict_proba(features):
         print(i)
