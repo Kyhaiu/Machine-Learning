@@ -1,4 +1,5 @@
 #import Screen as sc
+import os
 import warnings
 import itertools
 import pandas                  as pd
@@ -111,35 +112,58 @@ def count_board(clfs, features, target):
 
     number_of_classes = 6
     result  = []
-    tmp = [[], [], [], [], []]
+    tmp_knn, tmp_dt, tmp_nb, tmp_svm, tmp_mlp = [], [], [], [], []
 
     l = 0
     for (a, b, c, d, e) in itertools.zip_longest(clfs[0].predict_proba(features), clfs[1].predict_proba(features), clfs[2].predict_proba(features), clfs[3].predict_proba(features), clfs[4].predict_proba(features)):
         i = 0
         while i < number_of_classes:
             l = np.where(a == max(a))
-            tmp[0].append([a[i], int(l[0])+1, -1])
+            tmp_knn.append([a[i], int(l[0])+1, -1])
 
             l = np.where(b == max(b))
-            tmp[1].append([b[i], int(l[0])+1, -1])
+            tmp_dt.append([b[i], int(l[0])+1, -1])
             
             l = np.where(c == max(c))
-            tmp[2].append([c[i], int(l[0])+1, -1])
+            tmp_nb.append([c[i], int(l[0])+1, -1])
 
             l = np.where(d == max(d))
-            tmp[3].append([d[i], int(l[0])+1, -1])
+            tmp_svm.append([d[i], int(l[0])+1, -1])
 
             l = np.where(e == max(e))
-            tmp[4].append([e[i], int(l[0])+1, -1])
+            tmp_mlp.append([e[i], int(l[0])+1, -1])
             i += 1
                 
-        tmp[0].sort(key=lambda tup: tup[0], reverse=True)
-        tmp[1].sort(key=lambda tup: tup[0], reverse=True)
-        tmp[2].sort(key=lambda tup: tup[0], reverse=True)
-        tmp[3].sort(key=lambda tup: tup[0], reverse=True)
-        tmp[4].sort(key=lambda tup: tup[0], reverse=True)
-        
-        
+        tmp_knn.sort(key=lambda tup: tup[0], reverse=True)
+        tmp_dt.sort(key=lambda tup: tup[0], reverse=True)
+        tmp_nb.sort(key=lambda tup: tup[0], reverse=True)
+        tmp_svm.sort(key=lambda tup: tup[0], reverse=True)
+        tmp_mlp.sort(key=lambda tup: tup[0], reverse=True)
+
+    i = 0
+    j = 6
+    while(i < len(tmp_knn)):
+        if(j == 0):
+            j = 6
+        tmp_knn[i][2] = j
+        tmp_dt[i][2] = j
+        tmp_nb[i][2] = j
+        tmp_svm[i][2] = j
+        tmp_mlp[i][2] = j
+        i += 1
+        j -= 1
+
+    tmp_knn.sort(key=lambda tup: tup[1], reverse=False)
+    tmp_dt.sort(key=lambda tup: tup[1], reverse=False)
+    tmp_nb.sort(key=lambda tup: tup[1], reverse=False)
+    tmp_svm.sort(key=lambda tup: tup[1], reverse=False)
+    tmp_mlp.sort(key=lambda tup: tup[1], reverse=False)
+
+    i = 0
+    while(i < len(tmp_knn)):
+        print(tmp_knn[i])
+        i += 1
+
     return result
 
 
