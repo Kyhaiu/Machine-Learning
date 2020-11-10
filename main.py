@@ -1,15 +1,18 @@
 #import Screen as sc
-import pandas                as pd
-import numpy                 as np
-import knn                   as knn
-import decision_tree         as dt
-import naive_bayes           as nb
-import svm                   as svm
-import multilayer_perceptron as mlp
-
+import warnings
+import pandas                  as pd
+import numpy                   as np
+import knn                     as knn
+import decision_tree           as dt
+import naive_bayes             as nb
+import svm                     as svm
+import multilayer_perceptron   as mlp
 import sklearn.model_selection as skms
 
+from sklearn.utils.testing import ignore_warnings
+
 def main():
+    warnings.simplefilter("ignore", UserWarning)
     csv = pd.read_csv('Glass.csv', sep=',')
     
     #Coluna responsavel por classicar as classes de dados(parametro usado no STRATIFY{serve para manter a proporção dos elementos na hora de realizar as divisões})
@@ -42,14 +45,14 @@ def main():
     clfs[0] = testingClassifiers(knn.knn(k_validation), features_test, target_test)                      #KNN Euclidiano
     #clfs[1] = testingClassifiers(dt.decision_tree(train, validation)[1], features_test, target_test)    #Decision-Tree completa(sem poda)
     #clfs[2] = testingClassifiers(nb.naive_bayes(train, validation)[1], features_test, target_test)      #Naive-Bayes Bernoulli
-    #clfs[3] = testingClassifiers(svm.svm(train, validation)[1], features_test, target_test)             #SMV kernel RBF
+    clfs[3] = testingClassifiers(svm.svm(k_validation), features_test, target_test)             #SMV kernel RBF
     #clfs[4] = testingClassifiers(mlp.my_little_poney(train, validation)[0], features_test, target_test) #MLP Constant
 
     del classes, csv, database, test, target_test, features_test
     return (clfs)
 
 def testingClassifiers(clf, features_test, target_test):
-    return clf.best_estimator_.score(features_test, target_test)
+    return clf.score(features_test, target_test)
 
 # Função rodada 5 vezes, e realizado uma analise manual para definir qual é o melho classificador entre os tipos de classificadores retornados
 """
@@ -65,14 +68,16 @@ def choose_best_classifier(clfs, features_test, target_test):
 """
 
 i = 1
+mean = []
 while i <= 20:
     _knn, _dt, _nb, _svm, _mlp = None, None, None, None, None
-
     print('Iteration ' + str(i))
     _knn, _dt, _nb, _svm, _mlp = main()
+    mean.append(_knn)
     print("KNN           : " + str(_knn) + "\n" +
           "DT            : " + str(_dt)  + '\n' +
           "Naive-Bayes   : " + str(_nb)  + '\n' +
           "SVM           : " + str(_svm) + '\n' + 
           "MLP           : " + str(_mlp) + '\n')
     i += 1
+print(np.mean(mean))

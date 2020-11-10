@@ -32,7 +32,7 @@ from sklearn.model_selection import GridSearchCV
 def knn(k_validation):
     # Target Class
     target = k_validation['Class']
-    
+
     # Features
     features = k_validation
 
@@ -52,8 +52,8 @@ def knn(k_validation):
 
     clf = GridSearchCV(KNeighborsClassifier(), parameters, cv=3)
     clf = clf.fit(features, target)
-    
-    return clf
+
+    return clf.best_estimator_
 
 """
 def plot(neigh_fit, features_v, target_v):
