@@ -114,11 +114,11 @@ def rule_of_sum(clfs, features, target):
             j+=1
         print(i)
     
-    print("SUM KNN: " + sum_knn)
-    print("SUM DT : " + sum_dt)
-    print("SUM NB : " + sum_nb)
-    print("SUM SVM: " + sum_svm)
-    print("SUM MLP: " + sum_mlp)
+    print("SUM KNN: " + str(sum_knn))
+    print("SUM DT : " + str(sum_dt))
+    print("SUM NB : " + str(sum_nb))
+    print("SUM SVM: " + str(sum_svm))
+    print("SUM MLP: " + str(sum_mlp))
 
 def kruskal_wallis(mean):
     stat, p = kruskal(mean[0], mean[1], mean[2], mean[3], mean[4])
