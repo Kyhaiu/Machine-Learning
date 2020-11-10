@@ -51,7 +51,7 @@ def main():
     clfs_scores[2] = testingClassifiers(clfs[2], features_test, target_test) #Naive-Bayes
     clfs_scores[3] = testingClassifiers(clfs[3], features_test, target_test) #SMV kernel 
     clfs_scores[4] = testingClassifiers(clfs[4], features_test, target_test) #MLP
-    aux = rule_of_sum(clfs, features_test, target_test)           #Regra da Soma
+    tmp_sum = rule_of_sum(clfs, features_test, target_test)                  #Regra da Soma
 
     del classes, csv, database, test, target_test, features_test
     return clfs_scores
@@ -60,6 +60,10 @@ def testingClassifiers(clf, features_test, target_test):
     return clf.score(features_test, target_test)
 
 def rule_of_sum(clfs, features, target):
+    # 1. PEGAR QUAL FOI A CLASSE ATRIBUÍDA + A SUA ACURÁCIA (Probabilidade)
+    # 2. SOMAR AS ACURÁCIAS DE CADA ITERAÇÃO E CLASSE
+    # 3. A CLASSE COM A MAIOR, VENCE
+
     #clfs[0] -> KNN
     #clfs[1] -> Decision-Tree
     #clfs[2] -> Naive-Bayes
