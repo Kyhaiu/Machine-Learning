@@ -1,28 +1,44 @@
-import pandas as pd
-import numpy  as np
-import statistics as st
-from sklearn.neural_network import MLPClassifier
+import pandas                  as pd
+import numpy                   as np
+import statistics              as st
+import sklearn.model_selection as skms
+
+from sklearn.neural_network  import MLPClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn.utils.testing import ignore_warnings
-from sklearn.exceptions import ConvergenceWarning
+from sklearn.utils.testing   import ignore_warnings
+from sklearn.exceptions      import ConvergenceWarning
 
 @ignore_warnings(category=ConvergenceWarning)
-def my_little_poney(train, validation):
-    # Targets
-    target_train       = train['Class']
-    target_validation  = validation['Class']
+def my_little_poney(k_validation):
+    classes = k_validation['Class']
+    database = skms.train_test_split(k_validation, test_size = 0.25, train_size = 0.75, shuffle = True, stratify=classes)
 
-    # Features e deleta a coluna Target das Features
-    features_train = train.drop(['Class'], axis=1)
-    features_validation = validation.drop(['Class'], axis=1)
+    del classes
+
+    target_tr = database[0]['Class']
+    target_v  = database[1]['Class']
+
+    # Features
+    features_tr = database[0]
+    features_v  = database[1]
+
+    # Deleta a coluna Target das Features
+    features_tr = features_tr.drop(['Class'], axis=1)
+    features_v  = features_v.drop(['Class'], axis=1)
     
     #retorna o mlp com taxa constant, invscalling, adaptative
-    best_poney_constant, best_poney_inv, best_poney_adapt = find_best_poney(features_train, target_train, features_validation, target_validation)
-    return [best_poney_constant, best_poney_inv, best_poney_adapt]
+    best_poney_constant, best_poney_inv, best_poney_adapt = find_best_poney(features_tr, target_tr, features_v, target_v)
+
+    if best_poney_constant.score(features_v, target_v) >= best_poney_inv.score(features_v, target_v) and best_poney_constant.score(features_v, target_v) >= best_poney_adapt.score(features_v, target_v):
+        return best_poney_constant
+    elif best_poney_inv.score(features_v, target_v) >= best_poney_constant.score(features_v, target_v) and best_poney_inv.score(features_v, target_v) >= best_poney_adapt.score(features_v, target_v):
+        return best_poney_inv
+    elif best_poney_adapt.score(features_v, target_v) >= best_poney_constant.score(features_v, target_v) and best_poney_adapt.score(features_v, target_v) >= best_poney_inv.score(features_v, target_v):
+        return best_poney_adapt
     
 
 def find_best_poney(features_train, target_train, features_validation, target_validation):
-    i, j, k = 1, 1, 1
+    i, j, k, y = 1, 1, 1, 0
     mean = [0.0, 0.0, 0.0]
     classifier_constant, classifier_inv, classifier_adapt = [], [], []
     acc_const, acc_inv, acc_adapt = [], [], []
@@ -66,7 +82,7 @@ def find_best_poney(features_train, target_train, features_validation, target_va
             stop[2] = True
 
 
-        if ((i >= 100 and j >= 100 and k >= 300) or (stop[0] and stop[1] and stop[2])):
+        if ((i >= 100 and j >= 100 and k >= 300) or (stop[0] and stop[1] and stop[2]) or (y == 50)):
             break
         if (i >= 100):
             i = 1
@@ -80,5 +96,36 @@ def find_best_poney(features_train, target_train, features_validation, target_va
             k = 1
         else:
             k += 10
+        y += 1
         
     return (classifier_constant[acc_const.index(max(acc_const), 0, -1)], classifier_inv[acc_inv.index(max(acc_inv), 0, -1)], classifier_adapt[acc_adapt.index(max(acc_adapt), 0, -1)])
+
+"""@ignore_warnings(category=ConvergenceWarning)
+def my_little_poney(k_validation):
+    # Target Class
+    target = k_validation['Class']
+
+    # Features
+    features = k_validation
+
+    # Deleta a coluna Target, ou seja, separa ela das Features
+    features = features.drop(['Class'], axis=1)
+    
+    #as funções são relacionadas a poney, pq o yt quando vc digita mlp ele retorna coisas relacionadas a my little poney
+    #retorna o mlp com taxa constant, invscalling, adaptative
+    best_poney =  find_best_poney(features, target)
+    return best_poney
+
+    
+
+def find_best_poney(features, target):
+    tupla = (list(range(20, 41, 10)), list(range(20, 41, 10)))
+    parameters = {
+                    'hidden_layer_sizes' : tupla,
+                    'learning_rate' : ['constant', 'invscaling', 'adaptive'],
+                    'max_iter' : list(range(180, 201, 10))
+                 }
+    clf = GridSearchCV(MLPClassifier(), parameters, cv = 3)
+    clf.fit(features, target)
+
+    return clf.best_estimator_"""

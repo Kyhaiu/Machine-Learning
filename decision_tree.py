@@ -1,7 +1,10 @@
-import pandas as pd
-import numpy as np
+import pandas                  as pd
+import numpy                   as np
+import matplotlib.pyplot       as plt
+import sklearn.model_selection as skms
+
 from sklearn import tree
-import matplotlib.pyplot as plt
+
 
 # Problema Multiclasse (9) = {
 #   A1. RI: refractive index
@@ -38,22 +41,31 @@ import matplotlib.pyplot as plt
       *Entropia = Entropia_var_Decisão(é testado para todas as features e pega a que tem maior valor e repete esse processo até conseguir um ganho de informação = 0 em todas as features)
 """ 
 
-def decision_tree(train, validation):
+def decision_tree(train):
+
+   classes = train['Class']
    
-   target_tr = train['Class']
-   target_v  = validation['Class']
+   database = skms.train_test_split(train, test_size = 0.25, train_size = 0.75, shuffle = True, stratify=classes)
+
+   del classes
+
+   target_tr = database[0]['Class']
+   target_v  = database[1]['Class']
 
    # Features
-   features_tr = train
-   features_v  = validation
+   features_tr = database[0]
+   features_v  = database[1]
 
    # Deleta a coluna Target das Features
    ft_train = features_tr.drop(['Class'], axis=1)
    ft_validation = features_v.drop(['Class'], axis=1)
 
    best_params = find_best_pruning(ft_train, target_tr, ft_validation, target_v)
-   
-   return [best_params[0], best_params[1]] #retorna a arvore podada, e arvore completa
+
+   if best_params[0].score(ft_validation, target_v) > best_params[1].score(ft_validation, target_v):
+      return best_params[0]#arvore podada
+   else:
+      return best_params[1]#arvore completa
 
 
 def find_best_pruning(features_train, targets_train, features_validation, target_validation):

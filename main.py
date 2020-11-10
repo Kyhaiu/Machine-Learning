@@ -23,7 +23,7 @@ def main():
         database[0]' = conjunto de treino => 75%
         database[1]' = conjutno de teste  => 25%
     """
-    database = skms.train_test_split(csv, test_size = 0.75, train_size = 0.25, shuffle = True, stratify=classes)
+    database = skms.train_test_split(csv, test_size = 0.25, train_size = 0.75, shuffle = True, stratify=classes)
     k_validation = database[0]
     test = database[1]
 
@@ -43,10 +43,10 @@ def main():
     #clfs[4] = choose_best_classifier(mlp.my_little_poney(train, validation), features_test, target_test)
 
     clfs[0] = testingClassifiers(knn.knn(k_validation), features_test, target_test)                      #KNN Euclidiano
-    #clfs[1] = testingClassifiers(dt.decision_tree(train, validation)[1], features_test, target_test)    #Decision-Tree completa(sem poda)
-    #clfs[2] = testingClassifiers(nb.naive_bayes(train, validation)[1], features_test, target_test)      #Naive-Bayes Bernoulli
-    clfs[3] = testingClassifiers(svm.svm(k_validation), features_test, target_test)             #SMV kernel RBF
-    #clfs[4] = testingClassifiers(mlp.my_little_poney(train, validation)[0], features_test, target_test) #MLP Constant
+    clfs[1] = testingClassifiers(dt.decision_tree(k_validation), features_test, target_test)             #Decision-Tree completa(sem poda)
+    clfs[2] = testingClassifiers(nb.naive_bayes(k_validation), features_test, target_test)      #Naive-Bayes Bernoulli
+    clfs[3] = testingClassifiers(svm.svm(k_validation), features_test, target_test)                      #SMV kernel RBF
+    clfs[4] = testingClassifiers(mlp.my_little_poney(k_validation), features_test, target_test) #MLP Constant
 
     del classes, csv, database, test, target_test, features_test
     return (clfs)
@@ -68,16 +68,26 @@ def choose_best_classifier(clfs, features_test, target_test):
 """
 
 i = 1
-mean = []
+mean = [[], [], [], [], []]
 while i <= 20:
     _knn, _dt, _nb, _svm, _mlp = None, None, None, None, None
     print('Iteration ' + str(i))
     _knn, _dt, _nb, _svm, _mlp = main()
-    mean.append(_knn)
+    mean[0].append(_knn)
+    mean[1].append(_dt)
+    mean[2].append(_nb)
+    mean[3].append(_svm)
+    mean[4].append(_mlp)
     print("KNN           : " + str(_knn) + "\n" +
           "DT            : " + str(_dt)  + '\n' +
           "Naive-Bayes   : " + str(_nb)  + '\n' +
           "SVM           : " + str(_svm) + '\n' + 
           "MLP           : " + str(_mlp) + '\n')
     i += 1
-print(np.mean(mean))
+
+print('\n')
+print(np.mean(mean[0]))
+print(np.mean(mean[1]))
+print(np.mean(mean[2]))
+print(np.mean(mean[3]))
+print(np.mean(mean[4]))
