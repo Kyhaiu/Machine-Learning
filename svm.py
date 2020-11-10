@@ -22,7 +22,7 @@ def svm(k_validation):
 
     parameters = {'kernel':('linear', 'rbf'), 'C':list(range(1, 21, 1))}
 
-    clf = GridSearchCV(SVC(), parameters, cv=3)
+    clf = GridSearchCV(SVC(probability=True), parameters, cv=3)
     clf = clf.fit(features, target)
 
     return clf.best_estimator_
