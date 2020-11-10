@@ -110,54 +110,62 @@ def count_board(clfs, features, target):
     #clfs[3] -> Suport-Vector-Machine
     #clfs[4] -> Multi-Layer-Perceptron
 
+    aux = 0
     number_of_classes = 6
     result  = []
-    tmp_knn, tmp_dt, tmp_nb, tmp_svm, tmp_mlp = [], [], [], [], []
+    tmp_knn, tmp_dt, tmp_nb, tmp_svm, tmp_mlp = [[]*len(target)], [[]*len(target)], [[]*len(target)], [[]*len(target)], [[]*len(target)]
 
     l = 0
     for (a, b, c, d, e) in itertools.zip_longest(clfs[0].predict_proba(features), clfs[1].predict_proba(features), clfs[2].predict_proba(features), clfs[3].predict_proba(features), clfs[4].predict_proba(features)):
         i = 0
         while i < number_of_classes:
             l = np.where(a == max(a))
-            tmp_knn.append([a[i], int(l[0])+1, -1])
+            tmp_knn[aux].append([a[i], int(l[0])+1, -1])
 
             l = np.where(b == max(b))
-            tmp_dt.append([b[i], int(l[0])+1, -1])
+            tmp_dt[aux].append([b[i], int(l[0])+1, -1])
             
             l = np.where(c == max(c))
-            tmp_nb.append([c[i], int(l[0])+1, -1])
+            tmp_nb[aux].append([c[i], int(l[0])+1, -1])
 
             l = np.where(d == max(d))
-            tmp_svm.append([d[i], int(l[0])+1, -1])
+            tmp_svm[aux].append([d[i], int(l[0])+1, -1])
 
             l = np.where(e == max(e))
-            tmp_mlp.append([e[i], int(l[0])+1, -1])
+            tmp_mlp[aux].append([e[i], int(l[0])+1, -1])
             i += 1
                 
-        tmp_knn.sort(key=lambda tup: tup[0], reverse=True)
-        tmp_dt.sort(key=lambda tup: tup[0], reverse=True)
-        tmp_nb.sort(key=lambda tup: tup[0], reverse=True)
-        tmp_svm.sort(key=lambda tup: tup[0], reverse=True)
-        tmp_mlp.sort(key=lambda tup: tup[0], reverse=True)
+        tmp_knn[aux].sort(key=lambda tup: tup[0], reverse=True)
+        tmp_dt[aux].sort(key=lambda tup: tup[0], reverse=True)
+        tmp_nb[aux].sort(key=lambda tup: tup[0], reverse=True)
+        tmp_svm[aux].sort(key=lambda tup: tup[0], reverse=True)
+        tmp_mlp[aux].sort(key=lambda tup: tup[0], reverse=True)
+        
+        aux += 1
 
     i = 0
-    j = 6
+    j = 0
+    k = 6
     while(i < len(tmp_knn)):
-        if(j == 0):
-            j = 6
-        tmp_knn[i][2] = j
-        tmp_dt[i][2] = j
-        tmp_nb[i][2] = j
-        tmp_svm[i][2] = j
-        tmp_mlp[i][2] = j
+        while(j < 6):
+            if(k == 0):
+                k = 6
+            tmp_knn[i][j][2] = k
+            tmp_dt[i][j][2] = k
+            tmp_nb[i][j][2] = k
+            tmp_svm[i][j][2] = k
+            tmp_mlp[i][j][2] = k
+            k -= 1
         i += 1
-        j -= 1
 
-    tmp_knn.sort(key=lambda tup: tup[1], reverse=False)
-    tmp_dt.sort(key=lambda tup: tup[1], reverse=False)
-    tmp_nb.sort(key=lambda tup: tup[1], reverse=False)
-    tmp_svm.sort(key=lambda tup: tup[1], reverse=False)
-    tmp_mlp.sort(key=lambda tup: tup[1], reverse=False)
+    aux = 0
+    while (aux < len(tmp_knn)):
+        tmp_knn[aux].sort(key=lambda tup: tup[1], reverse=False)
+        tmp_dt[aux].sort(key=lambda tup: tup[1], reverse=False)
+        tmp_nb[aux].sort(key=lambda tup: tup[1], reverse=False)
+        tmp_svm[aux].sort(key=lambda tup: tup[1], reverse=False)
+        tmp_mlp[aux].sort(key=lambda tup: tup[1], reverse=False)
+        aux += 1
 
     i = 0
     while(i < len(tmp_knn)):
