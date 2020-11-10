@@ -52,11 +52,11 @@ def main():
     clfs_scores[2] = testingClassifiers(clfs[2], features_test, target_test) #Naive-Bayes
     clfs_scores[3] = testingClassifiers(clfs[3], features_test, target_test) #SMV kernel 
     clfs_scores[4] = testingClassifiers(clfs[4], features_test, target_test) #MLP
-    tmp_sum  = rule_of_sum(clfs, features_test, target_test)                 #Regra da Soma
-    tmp_prod = rule_of_prod(clfs, features_test, target_test)                #Regra do Produto
-
-    print(tmp_sum)
-    print(tmp_prod)
+    #tmp_sum  = rule_of_sum(clfs, features_test, target_test)                 #Regra da Soma
+    #tmp_prod = rule_of_prod(clfs, features_test, target_test)                #Regra do Produto
+    tmp_bord = count_board(clfs, features_test, target_test)
+    #print(tmp_sum)
+    #print(tmp_prod)
 
     del classes, csv, database, test, target_test, features_test
     return clfs_scores
@@ -91,16 +91,57 @@ def rule_of_prod(clfs, features, target):
     #clfs[4] -> Multi-Layer-Perceptron
     number_of_classes = 6
     result  = []
-    tmp_sum = [0, 0, 0, 0, 0, 0]
+    tmp_prod = [0, 0, 0, 0, 0, 0]
 
     for (i, j, k, l, m) in itertools.zip_longest(clfs[0].predict_proba(features), clfs[1].predict_proba(features), clfs[2].predict_proba(features), clfs[3].predict_proba(features), clfs[4].predict_proba(features)):
         count = 0
         while count < number_of_classes:
-            tmp_sum[count] = i[count] * j[count] * k[count] * l[count] * m[count]
+            tmp_prod[count] = i[count] * j[count] * k[count] * l[count] * m[count]
             count += 1
-        result.append(tmp_sum.index(max(tmp_sum))+1)
+        result.append(tmp_prod.index(max(tmp_prod))+1)
 
     return result
+
+def count_board(clfs, features, target):
+    #clfs[0] -> KNN
+    #clfs[1] -> Decision-Tree
+    #clfs[2] -> Naive-Bayes
+    #clfs[3] -> Suport-Vector-Machine
+    #clfs[4] -> Multi-Layer-Perceptron
+
+    number_of_classes = 6
+    result  = []
+    tmp = [[], [], [], [], []]
+
+    l = 0
+    for (a, b, c, d, e) in itertools.zip_longest(clfs[0].predict_proba(features), clfs[1].predict_proba(features), clfs[2].predict_proba(features), clfs[3].predict_proba(features), clfs[4].predict_proba(features)):
+        i = 0
+        while i < number_of_classes:
+            l = np.where(a == max(a))
+            tmp[0].append([a[i], int(l[0])+1, -1])
+
+            l = np.where(b == max(b))
+            tmp[1].append([b[i], int(l[0])+1, -1])
+            
+            l = np.where(c == max(c))
+            tmp[2].append([c[i], int(l[0])+1, -1])
+
+            l = np.where(d == max(d))
+            tmp[3].append([d[i], int(l[0])+1, -1])
+
+            l = np.where(e == max(e))
+            tmp[4].append([e[i], int(l[0])+1, -1])
+            i += 1
+                
+        tmp[0].sort(key=lambda tup: tup[0], reverse=True)
+        tmp[1].sort(key=lambda tup: tup[0], reverse=True)
+        tmp[2].sort(key=lambda tup: tup[0], reverse=True)
+        tmp[3].sort(key=lambda tup: tup[0], reverse=True)
+        tmp[4].sort(key=lambda tup: tup[0], reverse=True)
+        
+        
+    return result
+
 
 def kruskal_wallis(mean):
     stat, p = kruskal(mean[0], mean[1], mean[2], mean[3], mean[4])
