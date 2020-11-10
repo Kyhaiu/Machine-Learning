@@ -70,22 +70,55 @@ def rule_of_sum(clfs, features, target):
     #clfs[2] -> Naive-Bayes
     #clfs[3] -> Suport-Vector-Machine
     #clfs[4] -> Multi-Layer-Perceptron
+    number_of_classes = 6
+
+    sum_knn = [0, 0, 0, 0, 0, 0]
+    sum_dt  = [0, 0, 0, 0, 0, 0]
+    sum_nb  = [0, 0, 0, 0, 0, 0]
+    sum_svm = [0, 0, 0, 0, 0, 0]
+    sum_mlp = [0, 0, 0, 0, 0, 0]
+
     print('KNN')
     for i in clfs[0].predict_proba(features):
+        j = 0
+        while(j < 6):
+            sum_knn[j] += i[j]
+            j+=1
         print(i)
-        #os.system("PAUSE")
     print('DT')
     for i in clfs[1].predict_proba(features):
+        j = 0
+        while(j < 6):
+            sum_dt[j] += i[j]
+            j+=1
         print(i)
     print('NB')
     for i in clfs[2].predict_proba(features):
+        j = 0
+        while(j < 6):
+            sum_nb[j] += i[j]
+            j+=1
         print(i)
     print('SVM')
     for i in clfs[3].predict_proba(features):
+        j = 0
+        while(j < 6):
+            sum_svm[j] += i[j]
+            j+=1
         print(i)
     print('MLP')
     for i in clfs[4].predict_proba(features):
+        j = 0
+        while(j < 6):
+            sum_mlp[j] += i[j]
+            j+=1
         print(i)
+    
+    print("SUM KNN: " + sum_knn)
+    print("SUM DT : " + sum_dt)
+    print("SUM NB : " + sum_nb)
+    print("SUM SVM: " + sum_svm)
+    print("SUM MLP: " + sum_mlp)
 
 def kruskal_wallis(mean):
     stat, p = kruskal(mean[0], mean[1], mean[2], mean[3], mean[4])
