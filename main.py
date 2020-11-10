@@ -1,6 +1,6 @@
 #import Screen as sc
 import warnings
-import os
+import itertools
 import pandas                  as pd
 import numpy                   as np
 import knn                     as knn
@@ -52,7 +52,11 @@ def main():
     clfs_scores[2] = testingClassifiers(clfs[2], features_test, target_test) #Naive-Bayes
     clfs_scores[3] = testingClassifiers(clfs[3], features_test, target_test) #SMV kernel 
     clfs_scores[4] = testingClassifiers(clfs[4], features_test, target_test) #MLP
-    tmp_sum = rule_of_sum(clfs, features_test, target_test)                  #Regra da Soma
+    tmp_sum  = rule_of_sum(clfs, features_test, target_test)                 #Regra da Soma
+    tmp_prod = rule_of_prod(clfs, features_test, target_test)                #Regra do Produto
+
+    print(tmp_sum)
+    print(tmp_prod)
 
     del classes, csv, database, test, target_test, features_test
     return clfs_scores
@@ -61,76 +65,54 @@ def testingClassifiers(clf, features_test, target_test):
     return clf.score(features_test, target_test)
 
 def rule_of_sum(clfs, features, target):
-    # 1. PEGAR QUAL FOI A CLASSE ATRIBUÍDA + A SUA ACURÁCIA (Probabilidade)
-    # 2. SOMAR AS ACURÁCIAS DE CADA ITERAÇÃO E CLASSE
-    # 3. A CLASSE COM A MAIOR, VENCE
-
     #clfs[0] -> KNN
     #clfs[1] -> Decision-Tree
     #clfs[2] -> Naive-Bayes
     #clfs[3] -> Suport-Vector-Machine
     #clfs[4] -> Multi-Layer-Perceptron
     number_of_classes = 6
+    result  = []
+    tmp_sum = [0, 0, 0, 0, 0, 0]
 
-    sum_knn = [0, 0, 0, 0, 0, 0]
-    sum_dt  = [0, 0, 0, 0, 0, 0]
-    sum_nb  = [0, 0, 0, 0, 0, 0]
-    sum_svm = [0, 0, 0, 0, 0, 0]
-    sum_mlp = [0, 0, 0, 0, 0, 0]
+    for (i, j, k, l, m) in itertools.zip_longest(clfs[0].predict_proba(features), clfs[1].predict_proba(features), clfs[2].predict_proba(features), clfs[3].predict_proba(features), clfs[4].predict_proba(features)):
+        count = 0
+        while count < number_of_classes:
+            tmp_sum[count] = i[count] + j[count] + k[count] + l[count] + m[count]
+            count += 1
+        result.append(tmp_sum.index(max(tmp_sum))+1)
 
-    print('KNN')
-    for i in clfs[0].predict_proba(features):
-        j = 0
-        while(j < number_of_classes):
-            sum_knn[j] += i[j]
-            j+=1
-        print(i)
-    print('DT')
-    for i in clfs[1].predict_proba(features):
-        j = 0
-        while(j < number_of_classes):
-            sum_dt[j] += i[j]
-            j+=1
-        print(i)
-    print('NB')
-    for i in clfs[2].predict_proba(features):
-        j = 0
-        while(j < number_of_classes):
-            sum_nb[j] += i[j]
-            j+=1
-        print(i)
-    print('SVM')
-    for i in clfs[3].predict_proba(features):
-        j = 0
-        while(j < number_of_classes):
-            sum_svm[j] += i[j]
-            j+=1
-        print(i)
-    print('MLP')
-    for i in clfs[4].predict_proba(features):
-        j = 0
-        while(j < number_of_classes):
-            sum_mlp[j] += i[j]
-            j+=1
-        print(i)
-    
-    print("SUM KNN: " + str(sum_knn))
-    print("SUM DT : " + str(sum_dt))
-    print("SUM NB : " + str(sum_nb))
-    print("SUM SVM: " + str(sum_svm))
-    print("SUM MLP: " + str(sum_mlp))
+    return result
+
+def rule_of_prod(clfs, features, target):
+    #clfs[0] -> KNN
+    #clfs[1] -> Decision-Tree
+    #clfs[2] -> Naive-Bayes
+    #clfs[3] -> Suport-Vector-Machine
+    #clfs[4] -> Multi-Layer-Perceptron
+    number_of_classes = 6
+    result  = []
+    tmp_sum = [0, 0, 0, 0, 0, 0]
+
+    for (i, j, k, l, m) in itertools.zip_longest(clfs[0].predict_proba(features), clfs[1].predict_proba(features), clfs[2].predict_proba(features), clfs[3].predict_proba(features), clfs[4].predict_proba(features)):
+        count = 0
+        while count < number_of_classes:
+            tmp_sum[count] = i[count] * j[count] * k[count] * l[count] * m[count]
+            count += 1
+        result.append(tmp_sum.index(max(tmp_sum))+1)
+
+    return result
 
 def kruskal_wallis(mean):
     stat, p = kruskal(mean[0], mean[1], mean[2], mean[3], mean[4])
     alpha = 0.05
     print('Hipoteses: \n\t * H0 : não há diferença significativa dos classificadores. \n\t * H1 : há diferença significativa dos classificadores. \n')
     if p > alpha:
-        print('Não diferença significativa entre os classificadores              , portanto não rejeita-se H0')
+        print('Não existe diferença significativa entre os classificadores       , portanto não rejeita-se H0')
     else:
         print('Existe diferença significativa em pelo meno um dos classificadores, portanto rejeita-se H0')
+        return True
 
 def mann_whitney(mean):
-    
     print('Hipoteses: \n\t * H0 : não há diferença significativa dos classificadores. \n\t * H1 : há diferença significativa dos classificadores. \n')
     i, j = 0, 0
     while i < 5:
@@ -168,6 +150,7 @@ def mann_whitney(mean):
 i = 1
 mean = [[], [], [], [], []]
 _knn, _dt, _nb, _svm, _mlp = None, None, None, None, None
+kruskal_return = False
 while i <= 1:
     print('Iteration ' + str(i))
     _knn, _dt, _nb, _svm, _mlp = main()
@@ -176,6 +159,7 @@ while i <= 1:
     mean[2].append(_nb)
     mean[3].append(_svm)
     mean[4].append(_mlp)
+    print('\n')
     print("KNN           : " + str(_knn) + "\n" +
           "DT            : " + str(_dt)  + '\n' +
           "Naive-Bayes   : " + str(_nb)  + '\n' +
@@ -183,19 +167,21 @@ while i <= 1:
           "MLP           : " + str(_mlp) + '\n')
     i += 1
 
-print('\n' + 'Resultado do teste de Kruskal-Wallis\n')
-kruskal_wallis([mean[0], mean[1], mean[2], mean[3], mean[4]])
-print('\n' + 'Resultado do teste Mann-Whitney\n')
-mann_whitney([mean[0], mean[1], mean[2], mean[3], mean[4]])
+print('Resultado do teste de Kruskal-Wallis')
+kruskal_return = kruskal_wallis([mean[0], mean[1], mean[2], mean[3], mean[4]])
+if(kruskal_return):
+    print('\n' + 'Resultado do teste Mann-Whitney\n')
+    mann_whitney([mean[0], mean[1], mean[2], mean[3], mean[4]])
+
 mean[0] = np.mean(mean[0])
 mean[1] = np.mean(mean[1])
 mean[2] = np.mean(mean[2])
 mean[3] = np.mean(mean[3])
 mean[4] = np.mean(mean[4])
 
-print('\n' + 'Resultado das médias\n')
-print('Média KNN                    :' + str(mean[0]))
-print('Média Decision-Tree          :' + str(mean[1]))
-print('Média Naive-Bayes            :' + str(mean[2]))
-print('Média Suport-Vector-Machine  :' + str(mean[3]))
-print('Média Multi-Layer-Perceptron :' + str(mean[4]))
+print('\n' + 'Resultado das médias')
+print('Média KNN                    : ' + str(mean[0]))
+print('Média Decision-Tree          : ' + str(mean[1]))
+print('Média Naive-Bayes            : ' + str(mean[2]))
+print('Média Suport-Vector-Machine  : ' + str(mean[3]))
+print('Média Multi-Layer-Perceptron : ' + str(mean[4]))
