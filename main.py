@@ -9,6 +9,7 @@ import svm                     as svm
 import multilayer_perceptron   as mlp
 import sklearn.model_selection as skms
 
+from scipy.stats           import mannwhitneyu
 from sklearn.utils.testing import ignore_warnings
 
 def main():
@@ -54,6 +55,41 @@ def main():
 def testingClassifiers(clf, features_test, target_test):
     return clf.score(features_test, target_test)
 
+def mann_whitney(mean):
+    # compare samples
+    i, j = 0, 0
+    while i < 5:
+        j = i+1
+        while j < 5:
+            stat, p = mannwhitneyu(mean[i], mean[j])
+            # interpretação
+            alpha = 0.05
+            if p > alpha:
+                if (i == 0 and j == 1): print('KNN tem a mesma distibuição que Decision-Tree                              portanto, não rejeita-se H0') 
+                if (i == 0 and j == 2): print('KNN tem a mesma distibuição que Support-Vector-Machines                    portanto, não rejeita-se H0')
+                if (i == 0 and j == 3): print('KNN tem a mesma distibuição que Naive-Bayes                                portanto, não rejeita-se H0') 
+                if (i == 0 and j == 4): print('KNN tem a mesma distibuição que Multi-Layer-Perceptron                     portanto, não rejeita-se H0') 
+                if (i == 1 and j == 2): print('Decision-Tree tem a mesma distibuição que Naive-Bayes                      portanto, não rejeita-se H0') 
+                if (i == 1 and j == 3): print('Decision-Tree tem a mesma distibuição que Support-Vector-Machines          portanto, não rejeita-se H0') 
+                if (i == 1 and j == 4): print('Decision-Tree tem a mesma distibuição que Multi-Layer-Perceptron           portanto, não rejeita-se H0') 
+                if (i == 2 and j == 3): print('Naive-Bayes tem a mesma distibuição que Support-Vector-Machines            portanto, não rejeita-se H0') 
+                if (i == 2 and j == 4): print('Naive-Bayes tem a mesma distibuição que Multi-Layer-Perceptron             portanto, não rejeita-se H0') 
+                if (i == 3 and j == 4): print('Support-Vector-Machines tem a mesma distibuição que Multi-Layer-Perceptron portanto, não rejeita-se H0') 
+            else:
+                if (i == 0 and j == 1): print('KNN tem a mesma distibuição que Decision-Tree                              portanto, rejeita-se H0') 
+                if (i == 0 and j == 2): print('KNN tem a mesma distibuição que Support-Vector-Machines                    portanto, rejeita-se H0')
+                if (i == 0 and j == 3): print('KNN tem a mesma distibuição que Naive-Bayes                                portanto, rejeita-se H0') 
+                if (i == 0 and j == 4): print('KNN tem a mesma distibuição que Multi-Layer-Perceptron                     portanto, rejeita-se H0') 
+                if (i == 1 and j == 2): print('Decision-Tree tem a mesma distibuição que Naive-Bayes                      portanto, rejeita-se H0') 
+                if (i == 1 and j == 3): print('Decision-Tree tem a mesma distibuição que Support-Vector-Machines          portanto, rejeita-se H0') 
+                if (i == 1 and j == 4): print('Decision-Tree tem a mesma distibuição que Multi-Layer-Perceptron           portanto, rejeita-se H0') 
+                if (i == 2 and j == 3): print('Naive-Bayes tem a mesma distibuição que Support-Vector-Machines            portanto, rejeita-se H0') 
+                if (i == 2 and j == 4): print('Naive-Bayes tem a mesma distibuição que Multi-Layer-Perceptron             portanto, rejeita-se H0') 
+                if (i == 3 and j == 4): print('Support-Vector-Machines tem a mesma distibuição que Multi-Layer-Perceptron portanto, rejeita-se H0') 
+            j += 1
+        i += 1
+    
+
 # Função rodada 5 vezes, e realizado uma analise manual para definir qual é o melho classificador entre os tipos de classificadores retornados
 """
 def choose_best_classifier(clfs, features_test, target_test):
@@ -69,7 +105,7 @@ def choose_best_classifier(clfs, features_test, target_test):
 
 i = 1
 mean = [[], [], [], [], []]
-while i <= 20:
+while i <= 5:
     _knn, _dt, _nb, _svm, _mlp = None, None, None, None, None
     print('Iteration ' + str(i))
     _knn, _dt, _nb, _svm, _mlp = main()
@@ -86,8 +122,10 @@ while i <= 20:
     i += 1
 
 print('\n')
-print(np.mean(mean[0]))
-print(np.mean(mean[1]))
-print(np.mean(mean[2]))
-print(np.mean(mean[3]))
-print(np.mean(mean[4]))
+
+mann_whitney([mean[0], mean[1], mean[2], mean[3], mean[4]])
+mean[0] = np.mean(mean[0])
+mean[1] = np.mean(mean[1])
+mean[2] = np.mean(mean[2])
+mean[3] = np.mean(mean[3])
+mean[4] = np.mean(mean[4])
