@@ -9,31 +9,26 @@ from sklearn.utils.testing   import ignore_warnings
 from sklearn.exceptions      import ConvergenceWarning
 
 @ignore_warnings(category=ConvergenceWarning)
-def my_little_poney(k_validation):
-    classes = k_validation['Class']
-    database = skms.train_test_split(k_validation, test_size = 0.25, train_size = 0.75, shuffle = True, stratify=classes)
+def my_little_poney(train, validation):
+    target_tr = train['Class']	
+    target_v  = validation['Class']	
 
-    del classes
+    # Features	
+    features_tr = train	
+    features_v  = validation	
 
-    target_tr = database[0]['Class']
-    target_v  = database[1]['Class']
-
-    # Features
-    features_tr = database[0]
-    features_v  = database[1]
-
-    # Deleta a coluna Target das Features
-    features_tr = features_tr.drop(['Class'], axis=1)
-    features_v  = features_v.drop(['Class'], axis=1)
+    # Deleta a coluna Target das Features	
+    ft_train = features_tr.drop(['Class'], axis=1)	
+    ft_validation = features_v.drop(['Class'], axis=1)
     
     #retorna o mlp com taxa constant, invscalling, adaptative
-    best_poney_constant, best_poney_inv, best_poney_adapt = find_best_poney(features_tr, target_tr, features_v, target_v)
+    best_poney_constant, best_poney_inv, best_poney_adapt = find_best_poney(ft_train, target_tr, ft_validation, target_v)
 
-    if best_poney_constant.score(features_v, target_v) >= best_poney_inv.score(features_v, target_v) and best_poney_constant.score(features_v, target_v) >= best_poney_adapt.score(features_v, target_v):
+    if best_poney_constant.score(ft_validation, target_v) >= best_poney_inv.score(ft_validation, target_v) and best_poney_constant.score(ft_validation, target_v) >= best_poney_adapt.score(ft_validation, target_v):
         return best_poney_constant
-    elif best_poney_inv.score(features_v, target_v) >= best_poney_constant.score(features_v, target_v) and best_poney_inv.score(features_v, target_v) >= best_poney_adapt.score(features_v, target_v):
+    elif best_poney_inv.score(ft_validation, target_v) >= best_poney_constant.score(ft_validation, target_v) and best_poney_inv.score(ft_validation, target_v) >= best_poney_adapt.score(ft_validation, target_v):
         return best_poney_inv
-    elif best_poney_adapt.score(features_v, target_v) >= best_poney_constant.score(features_v, target_v) and best_poney_adapt.score(features_v, target_v) >= best_poney_inv.score(features_v, target_v):
+    elif best_poney_adapt.score(ft_validation, target_v) >= best_poney_constant.score(ft_validation, target_v) and best_poney_adapt.score(ft_validation, target_v) >= best_poney_inv.score(ft_validation, target_v):
         return best_poney_adapt
     
 
@@ -99,33 +94,3 @@ def find_best_poney(features_train, target_train, features_validation, target_va
         y += 1
         
     return (classifier_constant[acc_const.index(max(acc_const), 0, -1)], classifier_inv[acc_inv.index(max(acc_inv), 0, -1)], classifier_adapt[acc_adapt.index(max(acc_adapt), 0, -1)])
-
-"""@ignore_warnings(category=ConvergenceWarning)
-def my_little_poney(k_validation):
-    # Target Class
-    target = k_validation['Class']
-
-    # Features
-    features = k_validation
-
-    # Deleta a coluna Target, ou seja, separa ela das Features
-    features = features.drop(['Class'], axis=1)
-    
-    #as funções são relacionadas a poney, pq o yt quando vc digita mlp ele retorna coisas relacionadas a my little poney
-    #retorna o mlp com taxa constant, invscalling, adaptative
-    best_poney =  find_best_poney(features, target)
-    return best_poney
-
-    
-
-def find_best_poney(features, target):
-    tupla = (list(range(20, 41, 10)), list(range(20, 41, 10)))
-    parameters = {
-                    'hidden_layer_sizes' : tupla,
-                    'learning_rate' : ['constant', 'invscaling', 'adaptive'],
-                    'max_iter' : list(range(180, 201, 10))
-                 }
-    clf = GridSearchCV(MLPClassifier(), parameters, cv = 3)
-    clf.fit(features, target)
-
-    return clf.best_estimator_"""

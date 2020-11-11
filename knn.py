@@ -30,55 +30,58 @@ from sklearn.model_selection import GridSearchCV
 # }
 
 def knn(train, validation, k):
-    # Target Class
-    classes = train['Class']
-   
-   database = skms.train_test_split(train, test_size = 0.25, train_size = 0.75, shuffle = True, stratify=classes)
+# Target Class	
+    target_tr = train['Class']	
+    target_v  = validation['Class']	
 
-   del classes
+    # Features	
+    features_tr = train	
+    features_v  = validation	
 
-   target_tr = train['Class']
-   target_v  = validation['Class']
+    # Deleta a coluna Target das Features	
+    ft_train = features_tr.drop(['Class'], axis=1)	
+    ft_validation = features_v.drop(['Class'], axis=1)
 
-   # Features
-   features_tr = train
-   features_v  = validation
+    # Valor de K                                        => n_neighbors	
+    # Métrica de Distância {	
+    #   não ponderado                                   => weights = 'uniform'	
+    #   ponderado pelo inverso da distância euclidiana  => weights = 'distance'	
+    #   ponderado por 1-distância normalizada           => ???	
+    #}	
+    # The default metric is minkowski, and with p=2 is equivalent to the standard Euclidean metric.	
+    # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html	
 
-   # Deleta a coluna Target das Features
-   ft_train = features_tr.drop(['Class'], axis=1)
-   ft_validation = features_v.drop(['Class'], axis=1)
+    neigh_np = KNeighborsClassifier(n_neighbors=k)	
+    neigh_ecl_inv = KNeighborsClassifier(n_neighbors=k, weights='distance', metric='minkowski', p=2)	
+    #neigh_pond = ???	
 
-    # Valor de K                                        => n_neighbors
-    # Métrica de Distância {
-    #   não ponderado                                   => weights = 'uniform'
-    #   ponderado pelo inverso da distância euclidiana  => weights = 'distance'
-    #   ponderado por 1-distância normalizada           => ???
-    #}
-    # The default metric is minkowski, and with p=2 is equivalent to the standard Euclidean metric.
-    # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
+    neigh_np = neigh_np.fit(ft_train, target_tr)	
+    neigh_ecl_inv = neigh_ecl_inv.fit(ft_train, target_tr)	
 
-    parameters = {'n_neighbors':[1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21], 'weights':('distance', 'uniform')}
+    acc_np = neigh_np.score(ft_validation, target_v)	
+    acc_ecl_inv = neigh_ecl_inv.score(ft_validation, target_v)	
+    #plot(neigh_fit, features_cnj2, target_cnj2)	
+    return [[acc_np, acc_ecl_inv], [neigh_np, neigh_ecl_inv]]
 
-    clf = GridSearchCV(KNeighborsClassifier(), parameters, cv=3)
-    clf = clf.fit(features, target)
+def findBestKNN(train, validation):	
+    i, best = 1, [[0, 0], [None, None], [None, None]]	
+    while(i < len(train)):	
+        tmp = knn(train, validation, i)	
 
-    return clf.best_estimator_
+        if tmp[0][0] > best[0][0]:	
+            best[0][0] = tmp[0][0] #acuracia do neigh_np	
+            best[1][0] = tmp[1][0] #classificador do neigh_np	
+            best[2][0] = i         #valor de k usado	
 
-def findBestKNN(train, validation):
-    i, best = 1, [[0, 0], [None, None], [None, None]]
-    while(i < len(train)/2):
-        tmp = knn(train, validation, i)
+        if tmp[0][1] > best[0][1]:	
+            best[0][1] = tmp[0][1] #acuracia do neigh_ecl_inv	
+            best[1][1] = tmp[1][1] #classificador do neigh_ecl_inv	
+            best[2][1] = i         #valor de k usado	
 
-        if tmp[0][0] > best[0][0]:
-            best[0][0] = tmp[0][0] #acuracia do neigh_np
-            best[1][0] = tmp[1][0] #classificador do neigh_np
-            best[2][0] = i         #valor de k usado
-        
-        if tmp[0][1] > best[0][1]:
-            best[0][1] = tmp[0][1] #acuracia do neigh_ecl_inv
-            best[1][1] = tmp[1][1] #classificador do neigh_ecl_inv
-            best[2][1] = i         #valor de k usado
-        
-        i+=1
-
-    return best
+        i+=1	
+    #print('KNN_NP      = Acc : ' + str(best[0][0]) + '\t, K : ' + str(best[2][0]))	
+    #print('KNN_ECL_INV = Acc : ' + str(best[0][1]) + '\t, K : ' + str(best[2][1]))	
+    if(best[0][0] > best[0][1]):
+        return best[1][0]
+    else:
+        return best[1][1]

@@ -43,12 +43,12 @@ from sklearn import tree
 
 def decision_tree(train, validation):
 
-   target_tr = database[0]['Class']
-   target_v  = database[1]['Class']
+   target_tr = train['Class']
+   target_v  = validation['Class']
 
    # Features
-   features_tr = database[0]
-   features_v  = database[1]
+   features_tr = train
+   features_v  = validation
 
    # Deleta a coluna Target das Features
    ft_train = features_tr.drop(['Class'], axis=1)

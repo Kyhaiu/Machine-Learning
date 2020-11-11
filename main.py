@@ -38,6 +38,14 @@ def main():
     database = skms.train_test_split(database[1], test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
     validation = database[0]
     test = database[1]
+
+    target_test = test['Class']
+
+    # Features
+    features_test = test
+
+    # Deleta a coluna Target, ou seja, separa ela das Features
+    features_test = features_test.drop(['Class'], axis=1)
     
     clfs = []
 
@@ -48,22 +56,19 @@ def main():
 
     clfs[0] = knn.findBestKNN(train, validation)  #KNN Euclidiano
     clfs[1] = dt.decision_tree(train, validation) #Decision-Tree completa(sem poda)
-    clfs[2] = nb.naive_bayes(k_validation)        #Naive-Bayes Bernoulli
-    clfs[3] = svm.svm(k_validation)               #SMV kernel RBF
-    clfs[4] = mlp.my_little_poney(k_validation)   #MLP Constant
+    clfs[2] = nb.naive_bayes(train, validation)        #Naive-Bayes Bernoulli
+    clfs[3] = svm.svm(train, validation)               #SMV kernel RBF
+    clfs[4] = mlp.my_little_poney(train, validation)   #MLP Constant
 
     clfs_scores[0] = testingClassifiers(clfs[0], features_test, target_test) #KNN 
     clfs_scores[1] = testingClassifiers(clfs[1], features_test, target_test) #Decision-Tree
     clfs_scores[2] = testingClassifiers(clfs[2], features_test, target_test) #Naive-Bayes
     clfs_scores[3] = testingClassifiers(clfs[3], features_test, target_test) #SMV kernel 
     clfs_scores[4] = testingClassifiers(clfs[4], features_test, target_test) #MLP
-    temp_sum = VotingClassifier(estimators=[('knn', clfs[0]), ('dt', clfs[0]), ('nb', clfs[0]), ('svm', clfs[0]), ('mlp', clfs[0])], voting='hard') 
-    #score(rule_of_sum(clfs, features_test, target_test), target_test)  #Regra da Soma
-    clfs_scores[5] = temp_sum.fit()
-    clfs_scores[6] = 
-    #score(rule_of_prod(clfs, features_test, target_test), target_test) #Regra do Produto
-    clfs_scores[7] = 
-    #score(borda_count(clfs, features_test, target_test), target_test)  #RBorda Count
+    #temp_sum = VotingClassifier(estimators=[('knn', clfs[0]), ('dt', clfs[0]), ('nb', clfs[0]), ('svm', clfs[0]), ('mlp', clfs[0])], voting='hard') 
+    clfs_scores[5] = score(rule_of_sum(clfs, features_test, target_test), target_test)  #Regra da Soma
+    clfs_scores[6] = score(rule_of_prod(clfs, features_test, target_test), target_test) #Regra do Produto
+    clfs_scores[7] = score(borda_count(clfs, features_test, target_test), target_test)  #RBorda Count
 
 
     del classes, csv, database, test, target_test, features_test
@@ -200,8 +205,7 @@ def score(prevision_targets, true_targets):
     for i, j in itertools.zip_longest(prevision_targets, true_targets):
         if(i == j):
             i += 1
-    
-    return (i/len(prevision_targets))*100
+    return (i/len(prevision_targets))
 
 
 
