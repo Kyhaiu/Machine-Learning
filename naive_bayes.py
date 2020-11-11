@@ -4,23 +4,18 @@ import numpy  as np
 import sklearn.model_selection as skms
 import sklearn.naive_bayes     as nb
 
-def naive_bayes(train):
-    classes = train['Class']
-    database = skms.train_test_split(train, test_size = 0.25, train_size = 0.75, shuffle = True, stratify=classes)
-
-    del classes
-
+def naive_bayes(train, teste):
     target_tr = database[0]['Class']
-    target_v  = database[1]['Class']
+        target_v  = database[1]['Class']
 
     # Features
     features_tr = database[0]
     features_v  = database[1]
 
     # Deleta a coluna Target das Features
-    features_tr = features_tr.drop(['Class'], axis=1)
-    features_v  = features_v.drop(['Class'], axis=1)
-        
+    ft_train = features_tr.drop(['Class'], axis=1)
+    ft_validation = features_v.drop(['Class'], axis=1)
+            
     nb_gaus =  nb.GaussianNB().fit(features_tr, target_tr)
 
     nb_bernoulliNB = nb.BernoulliNB().fit(features_tr, target_tr)

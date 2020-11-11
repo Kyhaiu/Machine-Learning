@@ -41,13 +41,7 @@ from sklearn import tree
       *Entropia = Entropia_var_Decisão(é testado para todas as features e pega a que tem maior valor e repete esse processo até conseguir um ganho de informação = 0 em todas as features)
 """ 
 
-def decision_tree(train):
-
-   classes = train['Class']
-   
-   database = skms.train_test_split(train, test_size = 0.25, train_size = 0.75, shuffle = True, stratify=classes)
-
-   del classes
+def decision_tree(train, validation):
 
    target_tr = database[0]['Class']
    target_v  = database[1]['Class']

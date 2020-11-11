@@ -22,40 +22,48 @@ def main():
     classes = csv['Class']
 
     """
-        realiza uma divisão sobre o do conjunto de dados
-        database[0]' = conjunto de treino => 75%
-        database[1]' = conjutno de teste  => 25%
+        realiza o shuffle e divided em 2 conjuntos de tamanho iguais (1/2) => 50% para o conjunto de teste
+        database[0] = conjunto de teste
+        database[1] = resto do conjunto
     """
-    database = skms.train_test_split(csv, test_size = 0.25, train_size = 0.75, shuffle = True, stratify=classes)
-    k_validation = database[0]
-    test = database[1]
+    database = skms.train_test_split(csv, test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
+    train = database[0]
+    classes = database[1]['Class']
 
-    # Target
-    target_test = test['Class']
-    # Features
-    features_test = test
-    # Deleta a coluna Target, ou seja, separa ela das Features
-    features_test = features_test.drop(['Class'], axis=1)
+    """
+        realiza uma segunda divisão sobre o resto do conjunto de dados ((1/2)/2) => 25% para o conjunto de validação e teste
+        database[0]' = conjunto de validação
+        database[1]' = conjutno de teste
+    """
+    database = skms.train_test_split(database[1], test_size = 0.5, train_size = 0.5, shuffle = True, stratify=classes)
+    validation = database[0]
+    test = database[1]
+    
+    clfs = []
 
     #classificadores treinados
     clfs = [None, None, None, None, None]
     #scores dos classificadores em cima do conjunto de teste
     clfs_scores = [None, None, None, None, None, None, None, None]
 
-    clfs[0] = knn.knn(k_validation)             #KNN Euclidiano
-    clfs[1] = dt.decision_tree(k_validation)    #Decision-Tree completa(sem poda)
-    clfs[2] = nb.naive_bayes(k_validation)      #Naive-Bayes Bernoulli
-    clfs[3] = svm.svm(k_validation)             #SMV kernel RBF
-    clfs[4] = mlp.my_little_poney(k_validation) #MLP Constant
+    clfs[0] = knn.findBestKNN(train, validation)  #KNN Euclidiano
+    clfs[1] = dt.decision_tree(train, validation) #Decision-Tree completa(sem poda)
+    clfs[2] = nb.naive_bayes(k_validation)        #Naive-Bayes Bernoulli
+    clfs[3] = svm.svm(k_validation)               #SMV kernel RBF
+    clfs[4] = mlp.my_little_poney(k_validation)   #MLP Constant
 
     clfs_scores[0] = testingClassifiers(clfs[0], features_test, target_test) #KNN 
     clfs_scores[1] = testingClassifiers(clfs[1], features_test, target_test) #Decision-Tree
     clfs_scores[2] = testingClassifiers(clfs[2], features_test, target_test) #Naive-Bayes
     clfs_scores[3] = testingClassifiers(clfs[3], features_test, target_test) #SMV kernel 
     clfs_scores[4] = testingClassifiers(clfs[4], features_test, target_test) #MLP
-    clfs_scores[5] = score(rule_of_sum(clfs, features_test, target_test), target_test)  #Regra da Soma
-    clfs_scores[6] = score(rule_of_prod(clfs, features_test, target_test), target_test) #Regra do Produto
-    clfs_scores[7] = score(borda_count(clfs, features_test, target_test), target_test)  #RBorda Count
+    temp_sum = VotingClassifier(estimators=[('knn', clfs[0]), ('dt', clfs[0]), ('nb', clfs[0]), ('svm', clfs[0]), ('mlp', clfs[0])], voting='hard') 
+    #score(rule_of_sum(clfs, features_test, target_test), target_test)  #Regra da Soma
+    clfs_scores[5] = temp_sum.fit()
+    clfs_scores[6] = 
+    #score(rule_of_prod(clfs, features_test, target_test), target_test) #Regra do Produto
+    clfs_scores[7] = 
+    #score(borda_count(clfs, features_test, target_test), target_test)  #RBorda Count
 
 
     del classes, csv, database, test, target_test, features_test

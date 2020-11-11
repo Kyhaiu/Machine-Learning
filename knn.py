@@ -29,15 +29,24 @@ from sklearn.model_selection import GridSearchCV
 #   7 headlamps
 # }
 
-def knn(k_validation):
+def knn(train, validation, k):
     # Target Class
-    target = k_validation['Class']
+    classes = train['Class']
+   
+   database = skms.train_test_split(train, test_size = 0.25, train_size = 0.75, shuffle = True, stratify=classes)
 
-    # Features
-    features = k_validation
+   del classes
 
-    # Deleta a coluna Target, ou seja, separa ela das Features
-    features = features.drop(['Class'], axis=1)
+   target_tr = train['Class']
+   target_v  = validation['Class']
+
+   # Features
+   features_tr = train
+   features_v  = validation
+
+   # Deleta a coluna Target das Features
+   ft_train = features_tr.drop(['Class'], axis=1)
+   ft_validation = features_v.drop(['Class'], axis=1)
 
     # Valor de K                                        => n_neighbors
     # Métrica de Distância {
@@ -55,13 +64,21 @@ def knn(k_validation):
 
     return clf.best_estimator_
 
-"""
-def plot(neigh_fit, features_v, target_v):
-    # Plot non-normalized confusion matrix
-    titles_options = [("Confusion matrix, without normalization", None)]
-    for title, normalize in titles_options:
-        disp = plot_confusion_matrix(neigh_fit, features_v, target_v, display_labels=['1', '2', '3', '4', '5', '6'], cmap=plt.cm.Blues, normalize=normalize)
-        disp.ax_.set_title(title)
+def findBestKNN(train, validation):
+    i, best = 1, [[0, 0], [None, None], [None, None]]
+    while(i < len(train)/2):
+        tmp = knn(train, validation, i)
 
-    plt.show()
-"""
+        if tmp[0][0] > best[0][0]:
+            best[0][0] = tmp[0][0] #acuracia do neigh_np
+            best[1][0] = tmp[1][0] #classificador do neigh_np
+            best[2][0] = i         #valor de k usado
+        
+        if tmp[0][1] > best[0][1]:
+            best[0][1] = tmp[0][1] #acuracia do neigh_ecl_inv
+            best[1][1] = tmp[1][1] #classificador do neigh_ecl_inv
+            best[2][1] = i         #valor de k usado
+        
+        i+=1
+
+    return best
