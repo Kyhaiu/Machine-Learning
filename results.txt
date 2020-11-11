@@ -1,46 +1,272 @@
-TESTES MAIS COMPLETOS:
-https://docs.google.com/spreadsheets/d/16UR8CtBcjK_Z_xzLyhcUSehpy1AzePzyg-clNB_vTTo/edit?usp=sharing
+Iteration 1
 
-KNN Não Ponderado (K=1)
-1  - 0.9433962264150944 => 0.9434
-2  - 0.9245283018867925 => 0.9245
-3  - 0.9433962264150944 => 0.9434
-4  - 0.8679245283018868 => 0.8679
-5  - 0.9622641509433962 => 0.9623
-6  - 0.9056603773584906 => 0.9057
-7  - 0.9245283018867925 => 0.9245
-8  - 0.8867924528301887 => 0.8868
-9  - 0.8867924528301887 => 0.8868
-10 - 0.9056603773584906 => 0.9057
-11 - 0.8867924528301887 => 0.8868
-12 - 0.9433962264150944 => 0.9434
-13 - 0.8679245283018868 => 0.8679
-14 - 0.8867924528301887 => 0.8868
-15 - 0.9811320754716981 => 0.9811
-16 - 0.8301886792452831 => 0.8302
-17 - 0.9245283018867925 => 0.9245
-18 - 0.9245283018867925 => 0.9245
-19 - 0.8490566037735849 => 0.8491
-20 - 0.8679245283018868 => 0.8679
 
-KNN Ponderado Inverso da Distância Euclidiana (K=1)
-1  - 0.8867924528301887 => 0.8866
-2  - 0.9811320754716981 => 0.9811
-3  - 0.8867924528301887 => 0.8866
-4  - 0.8867924528301887 => 0.8866
-5  - 0.9622641509433962 => 0.9623
-6  - 0.8867924528301887 => 0.8866
-7  - 0.9433962264150944 => 0.9434
-8  - 0.8867924528301887 => 0.8866
-9  - 0.9245283018867925 => 0.9245
-10 - 0.9056603773584906 => 0.9057
-11 - 0.8490566037735849 => 0.8491
-12 - 0.9245283018867925 => 0.9245
-13 - 0.9245283018867925 => 0.9245
-14 - 0.7924528301886793 => 0.7925
-15 - 0.9056603773584906 => 0.9057
-16 - 0.9622641509433962 => 0.9623
-17 - 0.8490566037735849 => 0.8491
-18 - 0.9056603773584906 => 0.9057
-19 - 0.8679245283018868 => 0.8679
-20 - 0.9245283018867925 => 0.9245
+KNN              : 0.6111111111111112 
+DT               : 0.6481481481481481 
+Naive-Bayes      : 0.5555555555555556 
+SVM              : 0.6481481481481481 
+MLP              : 0.6481481481481481 
+Regra da Soma    : 0.05555555555555555
+Regra do Produto : 0.05555555555555555
+Borda Count      : 0.018518518518518517
+
+Iteration 2
+
+
+KNN              : 0.5740740740740741
+DT               : 0.5555555555555556
+Naive-Bayes      : 0.5370370370370371
+SVM              : 0.5925925925925926
+MLP              : 0.6296296296296297
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 3
+
+
+KNN              : 0.6481481481481481
+DT               : 0.5925925925925926
+Naive-Bayes      : 0.6111111111111112
+SVM              : 0.6666666666666666
+MLP              : 0.6851851851851852
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 4
+
+
+KNN              : 0.6666666666666666
+DT               : 0.5925925925925926
+Naive-Bayes      : 0.5740740740740741
+SVM              : 0.6296296296296297
+MLP              : 0.6296296296296297
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 5
+
+
+KNN              : 0.6296296296296297
+DT               : 0.6111111111111112
+Naive-Bayes      : 0.7037037037037037
+SVM              : 0.5925925925925926
+MLP              : 0.7407407407407407
+Regra da Soma    : 0.018518518518518517
+Regra do Produto : 0.018518518518518517
+Borda Count      : 0.018518518518518517
+
+Iteration 6
+
+
+KNN              : 0.6666666666666666
+DT               : 0.7222222222222222
+Naive-Bayes      : 0.6481481481481481
+SVM              : 0.6111111111111112
+MLP              : 0.6111111111111112
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 7
+
+
+KNN              : 0.6111111111111112
+DT               : 0.5740740740740741
+Naive-Bayes      : 0.4444444444444444
+SVM              : 0.6296296296296297
+MLP              : 0.6111111111111112
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 8
+
+
+KNN              : 0.7222222222222222
+DT               : 0.7037037037037037
+Naive-Bayes      : 0.7222222222222222
+SVM              : 0.7407407407407407
+MLP              : 0.6666666666666666
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 9
+
+
+KNN              : 0.7407407407407407
+DT               : 0.6296296296296297
+Naive-Bayes      : 0.7407407407407407
+SVM              : 0.7407407407407407
+MLP              : 0.7407407407407407
+Regra da Soma    : 0.12962962962962962
+Regra do Produto : 0.12962962962962962
+Borda Count      : 0.018518518518518517
+
+Iteration 10
+
+
+KNN              : 0.6296296296296297
+DT               : 0.5925925925925926
+Naive-Bayes      : 0.6666666666666666
+SVM              : 0.7037037037037037
+MLP              : 0.7407407407407407
+Regra da Soma    : 0.05555555555555555
+Regra do Produto : 0.05555555555555555
+Borda Count      : 0.018518518518518517
+
+Iteration 11
+
+
+KNN              : 0.5925925925925926
+DT               : 0.5555555555555556
+Naive-Bayes      : 0.5925925925925926
+SVM              : 0.6111111111111112
+MLP              : 0.5740740740740741
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 12
+
+
+KNN              : 0.7037037037037037
+DT               : 0.5740740740740741
+Naive-Bayes      : 0.6296296296296297
+SVM              : 0.6481481481481481
+MLP              : 0.7222222222222222
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 13
+
+
+KNN              : 0.7407407407407407
+DT               : 0.6666666666666666
+Naive-Bayes      : 0.7407407407407407
+SVM              : 0.7592592592592593
+MLP              : 0.7592592592592593
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 14
+
+
+KNN              : 0.5740740740740741
+DT               : 0.5370370370370371
+Naive-Bayes      : 0.6111111111111112
+SVM              : 0.6666666666666666
+MLP              : 0.6111111111111112
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.05555555555555555
+Borda Count      : 0.037037037037037035
+
+Iteration 15
+
+
+KNN              : 0.6481481481481481
+DT               : 0.7037037037037037
+Naive-Bayes      : 0.48148148148148145
+SVM              : 0.6666666666666666
+MLP              : 0.6851851851851852
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 16
+
+
+KNN              : 0.6666666666666666
+DT               : 0.6296296296296297
+Naive-Bayes      : 0.6296296296296297
+SVM              : 0.6851851851851852
+MLP              : 0.6296296296296297
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 17
+
+
+KNN              : 0.7592592592592593
+DT               : 0.7037037037037037
+Naive-Bayes      : 0.6481481481481481
+SVM              : 0.6481481481481481
+MLP              : 0.6851851851851852
+Regra da Soma    : 0.05555555555555555
+Regra do Produto : 0.018518518518518517
+Borda Count      : 0.018518518518518517
+
+Iteration 18
+
+
+KNN              : 0.7222222222222222
+DT               : 0.6666666666666666
+Naive-Bayes      : 0.48148148148148145
+SVM              : 0.7407407407407407
+MLP              : 0.8518518518518519
+Regra da Soma    : 0.05555555555555555
+Regra do Produto : 0.05555555555555555
+Borda Count      : 0.018518518518518517
+
+Iteration 19
+
+
+KNN              : 0.6296296296296297
+DT               : 0.5555555555555556
+Naive-Bayes      : 0.4074074074074074
+SVM              : 0.6481481481481481
+MLP              : 0.7037037037037037
+Regra da Soma    : 0.037037037037037035
+Regra do Produto : 0.037037037037037035
+Borda Count      : 0.037037037037037035
+
+Iteration 20
+
+
+KNN              : 0.6851851851851852
+DT               : 0.7037037037037037
+Naive-Bayes      : 0.6481481481481481
+SVM              : 0.7592592592592593
+MLP              : 0.7592592592592593
+Regra da Soma    : 0.018518518518518517
+Regra do Produto : 0.018518518518518517
+Borda Count      : 0.018518518518518517
+
+Resultado do teste de Kruskal-Wallis
+Hipoteses: 
+         * H0 : não há diferença significativa dos classificadores.
+         * H1 : há diferença significativa dos classificadores.
+
+Existe diferença significativa em pelo meno um dos classificadores, portanto rejeita-se H0
+
+Resultado do teste Mann-Whitney
+
+Hipoteses:
+         * H0 : não há diferença significativa dos classificadores.
+         * H1 : há diferença significativa dos classificadores.
+
+KNN não é igual ao Decision-Tree                              portanto, rejeita-se H0
+KNN não é igual ao Naive-Bayes                                portanto, rejeita-se H0
+KNN é igual ao Support-Vector-Machines                    portanto, não rejeita-se H0
+KNN é igual ao Multi-Layer-Perceptron                     portanto, não rejeita-se H0
+Decision-Tree é igual ao Naive-Bayes                      portanto, não rejeita-se H0
+Decision-Tree não é igual ao Support-Vector-Machines          portanto, rejeita-se H0
+Decision-Tree não é igual ao Multi-Layer-Perceptron           portanto, rejeita-se H0
+Naive-Bayes não é igual ao Support-Vector-Machines            portanto, rejeita-se H0
+Naive-Bayes não é igual ao Multi-Layer-Perceptron             portanto, rejeita-se H0
+Support-Vector-Machines é igual ao Multi-Layer-Perceptron portanto, não rejeita-se H0 
+
+Ordem do Classificadores: MLP > SMV > KNN > DT > NB
+
+Resultado das médias
+Média KNN                    : 0.661111111111111
+Média Decision-Tree          : 0.625925925925926
+Média Naive-Bayes            : 0.6037037037037037
+Média Suport-Vector-Machine  : 0.6694444444444445
+Média Multi-Layer-Perceptron : 0.6842592592592592
