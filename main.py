@@ -40,7 +40,7 @@ def main():
     #classificadores treinados
     clfs = [None, None, None, None, None]
     #scores dos classificadores em cima do conjunto de teste
-    clfs_scores = [None, None, None, None, None]
+    clfs_scores = [None, None, None, None, None, None, None, None]
 
     clfs[0] = knn.knn(k_validation)             #KNN Euclidiano
     clfs[1] = dt.decision_tree(k_validation)    #Decision-Tree completa(sem poda)
@@ -53,11 +53,10 @@ def main():
     clfs_scores[2] = testingClassifiers(clfs[2], features_test, target_test) #Naive-Bayes
     clfs_scores[3] = testingClassifiers(clfs[3], features_test, target_test) #SMV kernel 
     clfs_scores[4] = testingClassifiers(clfs[4], features_test, target_test) #MLP
-    #tmp_sum  = rule_of_sum(clfs, features_test, target_test)                 #Regra da Soma
-    #tmp_prod = rule_of_prod(clfs, features_test, target_test)                #Regra do Produto
-    tmp_bord = count_board(clfs, features_test, target_test)
-    #print(tmp_sum)
-    #print(tmp_prod)
+    clfs_scores[5] = score(rule_of_sum(clfs, features_test, target_test), target_test)  #Regra da Soma
+    clfs_scores[6] = score(rule_of_prod(clfs, features_test, target_test), target_test) #Regra do Produto
+    clfs_scores[7] = score(borda_count(clfs, features_test, target_test), target_test)  #RBorda Count
+
 
     del classes, csv, database, test, target_test, features_test
     return clfs_scores
@@ -103,76 +102,99 @@ def rule_of_prod(clfs, features, target):
 
     return result
 
-def count_board(clfs, features, target):
+def borda_count(clfs, features, target):
     #clfs[0] -> KNN
     #clfs[1] -> Decision-Tree
     #clfs[2] -> Naive-Bayes
     #clfs[3] -> Suport-Vector-Machine
     #clfs[4] -> Multi-Layer-Perceptron
 
-    aux = 0
     number_of_classes = 6
     result  = []
-    tmp_knn, tmp_dt, tmp_nb, tmp_svm, tmp_mlp = [[]*len(target)], [[]*len(target)], [[]*len(target)], [[]*len(target)], [[]*len(target)]
+    tmp_knn, tmp_dt, tmp_nb, tmp_svm, tmp_mlp = [], [], [], [], []
+    k = 0
 
-    l = 0
+    tmp_knn.append([])
+    tmp_dt.append([])
+    tmp_nb.append([])
+    tmp_svm.append([])
+    tmp_mlp.append([])
     for (a, b, c, d, e) in itertools.zip_longest(clfs[0].predict_proba(features), clfs[1].predict_proba(features), clfs[2].predict_proba(features), clfs[3].predict_proba(features), clfs[4].predict_proba(features)):
         i = 0
-        while i < number_of_classes:
-            l = np.where(a == max(a))
-            tmp_knn[aux].append([a[i], int(l[0])+1, -1])
-
-            l = np.where(b == max(b))
-            tmp_dt[aux].append([b[i], int(l[0])+1, -1])
-            
-            l = np.where(c == max(c))
-            tmp_nb[aux].append([c[i], int(l[0])+1, -1])
-
-            l = np.where(d == max(d))
-            tmp_svm[aux].append([d[i], int(l[0])+1, -1])
-
-            l = np.where(e == max(e))
-            tmp_mlp[aux].append([e[i], int(l[0])+1, -1])
-            i += 1
-                
-        tmp_knn[aux].sort(key=lambda tup: tup[0], reverse=True)
-        tmp_dt[aux].sort(key=lambda tup: tup[0], reverse=True)
-        tmp_nb[aux].sort(key=lambda tup: tup[0], reverse=True)
-        tmp_svm[aux].sort(key=lambda tup: tup[0], reverse=True)
-        tmp_mlp[aux].sort(key=lambda tup: tup[0], reverse=True)
         
-        aux += 1
+        while i < number_of_classes:
+            tmp_knn[k].append([a[i], i+1, -1])
+            
+            tmp_dt[k].append([b[i], i+1, -1])
+            
+            tmp_nb[k].append([c[i], i+1, -1])
 
-    i = 0
-    j = 0
-    k = 6
-    while(i < len(tmp_knn)):
-        while(j < 6):
+            tmp_svm[k].append([d[i], i+1, -1])
+
+            tmp_mlp[k].append([e[i], i+1, -1])
+            i += 1
+
+        tmp_knn.append([])
+        tmp_dt.append([])
+        tmp_nb.append([])
+        tmp_svm.append([])
+        tmp_mlp.append([])
+                
+        tmp_knn[k].sort(key=lambda tup: tup[0], reverse=True)
+        tmp_dt[k].sort(key=lambda tup: tup[0], reverse=True)
+        tmp_nb[k].sort(key=lambda tup: tup[0], reverse=True)
+        tmp_svm[k].sort(key=lambda tup: tup[0], reverse=True)
+        tmp_mlp[k].sort(key=lambda tup: tup[0], reverse=True)
+        k += 1
+
+        i = 0
+
+    i, j, k  = 0, 0, 6
+    while(i < (len(tmp_knn) - 1)):
+        j = 0
+        while (j < 6):
             if(k == 0):
                 k = 6
             tmp_knn[i][j][2] = k
-            tmp_dt[i][j][2] = k
-            tmp_nb[i][j][2] = k
+            tmp_dt[i][j][2]  = k
+            tmp_nb[i][j][2]  = k
             tmp_svm[i][j][2] = k
             tmp_mlp[i][j][2] = k
             k -= 1
+            j += 1
         i += 1
 
-    aux = 0
-    while (aux < len(tmp_knn)):
-        tmp_knn[aux].sort(key=lambda tup: tup[1], reverse=False)
-        tmp_dt[aux].sort(key=lambda tup: tup[1], reverse=False)
-        tmp_nb[aux].sort(key=lambda tup: tup[1], reverse=False)
-        tmp_svm[aux].sort(key=lambda tup: tup[1], reverse=False)
-        tmp_mlp[aux].sort(key=lambda tup: tup[1], reverse=False)
-        aux += 1
-
-    i = 0
-    while(i < len(tmp_knn)):
-        print(tmp_knn[i])
+    i, j = 0, 0
+    while(i < (len(tmp_knn)-1)):
+        tmp_knn[k].sort(key=lambda tup: tup[1], reverse=False)
+        tmp_dt[k].sort(key=lambda tup: tup[1], reverse=False)
+        tmp_nb[k].sort(key=lambda tup: tup[1], reverse=False)
+        tmp_svm[k].sort(key=lambda tup: tup[1], reverse=False)
+        tmp_mlp[k].sort(key=lambda tup: tup[1], reverse=False)
         i += 1
+
+    i, j = 0, 0
+    sum_ranking = [0, 0, 0, 0, 0, 0]
+    while (i < (len(tmp_knn)-1)):
+        sum_ranking = [0, 0, 0, 0, 0, 0]
+        j = 0 
+        while (j < 6):
+            sum_ranking[j] = tmp_knn[i][j][2] + tmp_dt[i][j][2] + tmp_nb[i][j][2] + tmp_svm[i][j][2] + tmp_mlp[i][j][2]
+            #print(' C1 : ' + str(tmp_knn[i][j][2]) + '; C2 : ' + str(tmp_dt[i][j][2]) + '; C3 : ' + str(tmp_nb[i][j][2])+ '; C4 : ' + str(tmp_svm[i][j][2])+ '; C5 : ' + str(tmp_mlp[i][j][2]))            
+            j += 1
+        i += 1
+        result.append(sum_ranking.index(max(sum_ranking)) + 1)
 
     return result
+
+def score(prevision_targets, true_targets):
+    i = 0
+    for i, j in itertools.zip_longest(prevision_targets, true_targets):
+        if(i == j):
+            i += 1
+    
+    return (i/len(prevision_targets))*100
+
 
 
 def kruskal_wallis(mean):
@@ -222,22 +244,25 @@ def mann_whitney(mean):
 
 i = 1
 mean = [[], [], [], [], []]
-_knn, _dt, _nb, _svm, _mlp = None, None, None, None, None
+_knn, _dt, _nb, _svm, _mlp, _sum, _prod, _borda = None, None, None, None, None, None, None, None
 kruskal_return = False
-while i <= 1:
+while i <= 5:
     print('Iteration ' + str(i))
-    _knn, _dt, _nb, _svm, _mlp = main()
+    _knn, _dt, _nb, _svm, _mlp, _sum, _prod, _borda = main()
     mean[0].append(_knn)
     mean[1].append(_dt)
     mean[2].append(_nb)
     mean[3].append(_svm)
     mean[4].append(_mlp)
     print('\n')
-    print("KNN           : " + str(_knn) + "\n" +
-          "DT            : " + str(_dt)  + '\n' +
-          "Naive-Bayes   : " + str(_nb)  + '\n' +
-          "SVM           : " + str(_svm) + '\n' + 
-          "MLP           : " + str(_mlp) + '\n')
+    print("KNN              : " + str(_knn)   + "\n" +
+          "DT               : " + str(_dt)    + '\n' +
+          "Naive-Bayes      : " + str(_nb)    + '\n' +
+          "SVM              : " + str(_svm)   + '\n' + 
+          "MLP              : " + str(_mlp)   + '\n' +
+          "Regra da Soma    : " + str(_sum)   + '\n' +
+          "Regra do Produto : " + str(_prod)  + '\n' +
+          "Borda Count      : " + str(_borda) + '\n')
     i += 1
 
 print('Resultado do teste de Kruskal-Wallis')
