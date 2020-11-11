@@ -258,7 +258,7 @@ i = 1
 mean = [[], [], [], [], []]
 _knn, _dt, _nb, _svm, _mlp, _sum, _prod, _borda = None, None, None, None, None, None, None, None
 kruskal_return = False
-while i <= 5:
+while i <= 20:
     print('Iteration ' + str(i))
     _knn, _dt, _nb, _svm, _mlp, _sum, _prod, _borda = main()
     mean[0].append(_knn)
