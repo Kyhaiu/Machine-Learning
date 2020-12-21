@@ -103,10 +103,17 @@ if __name__ == '__main__':
     data.dropna(inplace=True)
 
     # with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
-    #     print(data)
+    #    print(data)
 
     y = data.pop('selling_price').to_numpy()
 
+    print(f'y mean: {y.mean()}')
+    print(f'y var:  {y.var()}')
+    print(f'y std:  {y.std()}')
+    print(f'y max:  {y.max()}')
+    print(f'y min:  {y.min()}')
+
+    # make quali go quanti
     quali_labels = ['name', 'fuel', 'seller_type', 'transmission', 'owner', 'torque', 'seats']
 
     for ql in quali_labels:
@@ -115,7 +122,12 @@ if __name__ == '__main__':
         tql = ohe.fit_transform(d)
         data[ql] = tql
 
-    data = data.drop(columns=['name', 'fuel', 'mileage', 'engine', 'torque', 'seats'])
+    atributts = ['name', 'year', 'km_driven', 'fuel', 'seller_type', 'transmission', 'owner', 'mileage', 'engine', 'max_power', 'torque', 'seats']
+    for a in atributts:
+        x = data[a].to_numpy()
+        print(f'corr {a}: {np.corrcoef(x, y)**2}')
+
+    data = data.drop(columns=['name', 'year', 'km_driven', 'fuel', 'seller_type', 'owner', 'mileage', 'engine', 'torque', 'seats'])
 
     print(data)
 
