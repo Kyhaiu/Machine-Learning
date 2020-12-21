@@ -1,8 +1,9 @@
+from sklearn import preprocessing
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPClassifier as MLP
 from sklearn.svm import SVC as SVM
 from sklearn.tree import DecisionTreeClassifier as AD
-from sklearn import preprocessing
+import math
 import numpy as np
 import pandas as pd
 import sklearn as sk
@@ -23,8 +24,8 @@ def opt_ad(x_train, y_train, x_valid, y_valid):
     for i, alpha in enumerate(alphas):
         ad = AD(random_state=0, ccp_alpha=alpha)
         ad.fit(x_train, y_train)
-        res[i] = sk.metrics.mean_squared_error(ad.predict(x_valid),
-                                               y_valid)
+        res[i] = math.sqrt(sk.metrics.mean_squared_error(ad.predict(x_valid),
+                                                         y_valid))
 
     i = res.argmin()
 
@@ -37,7 +38,7 @@ def opt_ad(x_train, y_train, x_valid, y_valid):
 def opt_svm(x_train, y_train, x_valid, y_valid):
     """Obtem os melhores valores de C e kernel para o SVM"""
 
-    C = [0.01, 0.1, 1, 10, 100]
+    C = [0.01, 0.1, 1]
     kernel = ['poly', 'rbf']
 
     res = np.zeros((len(kernel), len(C)))
@@ -46,8 +47,8 @@ def opt_svm(x_train, y_train, x_valid, y_valid):
         for j, c in enumerate(C):
             svm = SVM(C=c, kernel=k, random_state=0)
             svm.fit(x_train, y_train)
-            res[i][j] = sk.metrics.mean_squared_error(svm.predict(x_valid),
-                                                      y_valid)
+            res[i][j] = math.sqrt(sk.metrics.mean_squared_error(svm.predict(x_valid),
+                                                                y_valid))
 
     i, j = np.unravel_index(res.argmin(), res.shape)
 
@@ -83,8 +84,8 @@ def opt_mlp(x_train, y_train, x_valid, y_valid):
                           hidden_layer_sizes=h,
                           random_state=0)
                 mlp.fit(x_train, y_train)
-                res[i][j][k] = sk.metrics.mean_squared_error(mlp.predict(x_valid),
-                                                             y_valid)
+                res[i][j][k] = math.sqrt(sk.metrics.mean_squared_error(mlp.predict(x_valid),
+                                                                       y_valid))
 
     i, j, k = np.unravel_index(res.argmin(), res.shape)
 
@@ -104,27 +105,31 @@ if __name__ == '__main__':
     # with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
     #     print(data)
 
-    y = data.pop('selling_price')
+    y = data.pop('selling_price').to_numpy()
 
-    quali_labels = ['name', 'fuel', 'seller_type', 'transmission', 'owner', 'mileage', 'engine', 'max_power', 'torque', 'seats']
+    quali_labels = ['name', 'fuel', 'seller_type', 'transmission', 'owner', 'torque', 'seats']
+
     for ql in quali_labels:
         ohe = preprocessing.LabelEncoder()
         d = data[ql].to_numpy().reshape(-1, 1)
         tql = ohe.fit_transform(d)
         data[ql] = tql
-        print(tql)
+
+    data = data.drop(columns=['name', 'fuel', 'mileage', 'engine', 'torque', 'seats'])
 
     print(data)
 
     x_train, x_test, y_train, y_test = \
-        sk.model_selection.train_test_split(data, y,
+        sk.model_selection.train_test_split(data.to_numpy(), y,
                                             test_size=0.3,
                                             shuffle=True,
                                             random_state=0)
 
     reg = LinearRegression().fit(x_train, y_train)
-    print(f'RL = {sk.metrics.mean_squared_error(reg.predict(x_test), y_test)}')
 
-    # opt_ad(x_train, y_train, x_test, y_test)
-    opt_svm(x_train, y_train, x_test, y_test)
+    print(reg.predict(x_test), y_test)
+    print(f'RL = {math.sqrt(sk.metrics.mean_squared_error(reg.predict(x_test), y_test))}')
+
+    opt_ad(x_train, y_train, x_test, y_test)
     opt_mlp(x_train, y_train, x_test, y_test)
+    opt_svm(x_train, y_train, x_test, y_test)
